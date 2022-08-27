@@ -32,6 +32,10 @@
     ]
   };
   
+  function timePlayed() {
+    return Date.now() - game.timeStarted;
+  }
+  
   function getNumberRate(t = 1) {
     return 2 ** game.compressors.reduce((x, y) => x + y) * t;
   }
@@ -138,6 +142,7 @@
         exportSave,
         hardReset,
         compress,
+        timePlayed,
         getNumberRate,
         getCompressCost,
         format
