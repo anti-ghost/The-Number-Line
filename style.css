@@ -1,0 +1,36 @@
+/*
+  The Number Line v0.1.0
+  Copyright © 2022 resu deteleD
+  Licensed under the MIT License
+*/
+
+body {
+  font-family: sans-serif;
+  color: white;
+  background: black;
+  margin: 2em;
+}
+
+button {
+  background-color: white;
+  border-color: black;
+  border-style: solid;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.tabButton {
+  font-size: 20px;
+  font-weight: bold;
+  height: 40px;
+  margin: 0 2px 0 2px;
+  border-radius: 6px;
+  padding: 0 12px 0 12px;
+}
+
+.optionsButton {
+  width: 150px;
+  height: 150px;
+  font-size: 16px;
+  border-radius: 8px;
+}
