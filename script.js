@@ -9,6 +9,8 @@
   
   const Vue = global.Vue;
   
+  let NaNerror = false;
+  
   const game = Vue.reactive({});  
   
   const newGame = {
@@ -32,6 +34,22 @@
     ]
   };
   
+  function NaNalert() {
+    NaNerror = true;
+    prompt(
+      "We have detected a NaN in your save! Please export it to your clipboard (although it might be broken) and report it to the developers of The Number Line.",
+      btoa(JSON.stringify(game))
+    );
+  }
+  
+  function checkNaNs(obj = game) {
+    for (const i in obj) {
+      if (typeof obj[i] == "object" && obj[i] !== obj && checkNaNs(obj[i])) return true;
+      if (Number.isNaN(obj[i])) return true;
+    }
+    return false;
+  }
+  
   function timePlayed() {
     return Date.now() - game.timeStarted;
   }
@@ -45,7 +63,12 @@
   }
   
   function format(number, int = false) {
+    if (isNaN(number)) {
+      NaNalert();
+      return "NaN";
+    }
     if (number < 0) return "-" + format(-number);
+    if (number == Infinity) return "Infinity";
     if (int && number < 999999.5) return number.toFixed(0);
     if (number <= 9.9995) number.toFixed(3);
     if (number < 1000) return number.toPrecision(4);
@@ -57,6 +80,22 @@
       exponent++;
     }
     return format(mantissa) + "e" + exponent.toFixed(0);
+  }
+  
+  function formatTime(time, int = false) {
+    if (time == Infinity) return "forever";
+    if (time < 60) return format(time, int) + " seconds";
+    if (time < 3600) return format(Math.floor(time / 60), true) + " minutes " +
+      format(time % 60, int) + " seconds";
+    if (time < 86400) return format(Math.floor(time / 3600), true) + " hours " +
+      format(Math.floor(time / 60) % 60, true) + " minutes " +
+      format(time % 60, int) + " seconds";
+    if (time < 31536000) return format(Math.floor(time / 86400), true) + " days " +
+      format(Math.floor(time / 3600) % 24, true) + " hours " +
+      format(Math.floor(time / 60) % 60, true) + " minutes";
+    if (time < 31536000000) return format(Math.floor(time / 31536000), true) + " years " +
+      format(Math.floor(time / 86400) % 365, true) + " days";
+    return format(time / 31536000) + " years";
   }
   
   function compress(x) {
@@ -73,11 +112,14 @@
   }
   
   function loop(time) {
+    if (!NaNerror && checkNaNs()) NaNalert();
+    if (NaNerror) return;
     game.number += getNumberRate(time);
     game.highestNumber = Math.max(game.number, game.highestNumber);
   }
   
   function simulateTime(ms) {
+    if (NaNerror) return;
     game.lastTick = Date.now();
     for (let i = 0; i < 10; i++) {
       loop(ms / 10000);
@@ -85,6 +127,7 @@
   }
   
   function save() {
+    if (NaNerror) return;
     localStorage.setItem("TheNumberLineSave", btoa(JSON.stringify(game)));
   }
   
@@ -145,7 +188,8 @@
         timePlayed,
         getNumberRate,
         getCompressCost,
-        format
+        format,
+        formatTime
       };
     }
   }).mount("#app");
