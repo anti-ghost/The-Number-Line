@@ -27,6 +27,9 @@
         <button @click="tab = 1" class="tabButton">
           Options
         </button>
+        <button @click="tab = 2" class="tabButton">
+          Statistics
+        </button>
       </p>
       <div v-if="tab == 0">
         <table>
@@ -126,6 +129,10 @@
             </i>
           </small>
         </p>
+      </div>
+      <div v-if="tab == 2">
+        <p>You have played for {{formatTime(timePlayed() / 1000)}}.</p>
+        <p>Your highest number was {{format(game.highestNumber)}}.</p>
       </div>
     </div>
   </body>
