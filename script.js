@@ -7,6 +7,12 @@
 (function(global) {
   "use strict";
   
+  if (btoa(location.href) != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pby9UaGUtTnVtYmVyLUxpbmUv") {
+    document.getElementById("app").style.display = "none";
+    document.getElementById("fake").style.display = "";
+    return;
+  }
+  
   const Vue = global.Vue;
   
   let NaNerror = false;
