@@ -8,7 +8,6 @@
   "use strict";
   
   if (btoa(location.href) != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pby9UaGUtTnVtYmVyLUxpbmUv") {
-    document.getElementById("app").style.display = "none";
     document.getElementById("fake").style.display = "";
     return;
   }
@@ -199,4 +198,6 @@
       };
     }
   }).mount("#app");
+  
+  document.getElementById("app").style.display = "";
 })(this);
