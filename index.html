@@ -17,7 +17,7 @@
     <script src="script.js" defer></script>
   </head>
   <body>
-    <div id="app">
+    <div id="app" style="display: none;">
       <h1>Number: {{format(game.number)}}</h1>
       <p>Your number is increasing by {{format(getNumberRate())}} per second</p>
       <p>
@@ -135,7 +135,7 @@
         <p>Your highest number was {{format(game.highestNumber)}}.</p>
       </div>
     </div>
-    <div id="fake">
+    <div id="fake" style="display: none;">
       <h1>It turns out someone is trying to steal the game!</h1>
       <p>
         Please go to <a href="https://anti-ghost.github.io/The-Number-Line/">https://anti-ghost.github.io/The-Number-Line/</a>.
