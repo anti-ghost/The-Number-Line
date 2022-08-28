@@ -18,6 +18,8 @@
   
   const Vue = global.Vue;
   
+  const D = Decimal;
+  
   const game = Vue.reactive({});  
   
   const newGame = {
