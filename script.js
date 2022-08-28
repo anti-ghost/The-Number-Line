@@ -1,5 +1,5 @@
 /*
-  The Number Line v0.1.0
+  The Number Line v1.0.0
   Copyright © 2022 resu deteleD
   Licensed under the MIT License
 */
@@ -19,7 +19,7 @@
   const game = Vue.reactive({});  
   
   const newGame = {
-    version: "0.1.0",
+    version: "1.0.0",
     timeStarted: Date.now(),
     lastTick: Date.now(),
     offlineProg: true,
