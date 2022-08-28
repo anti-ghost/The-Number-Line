@@ -14,12 +14,14 @@
   
   const DEBUG = true;
   
+  const VERSION = "1.0.0";
+  
   const Vue = global.Vue;
   
   const game = Vue.reactive({});  
   
   const newGame = {
-    version: "1.0.0",
+    version: VERSION,
     timeStarted: Date.now(),
     lastTick: Date.now(),
     offlineProg: true,
@@ -43,9 +45,10 @@
   
   function NaNalert() {
     NaNerror = true;
-    prompt(
-      "We have detected a NaN in your save! Please export it to your clipboard (although it might be broken) and report it to the developers of The Number Line.",
-      btoa(JSON.stringify(game))
+    exportSave();
+    alert(
+      "We have detected a NaN in your save! We have exported it to your clipboard (although it might be broken). " +
+      "Please report this save to the developers of The Number Line, so they can look into it."
     );
   }
   
@@ -142,6 +145,7 @@
     for (const i in loadgame) {
       game[i] = loadgame[i];
     }
+    game.version = VERSION;
     const diff = Date.now() - game.lastTick;
     console.log(diff);
     if (game.offlineProg) {
@@ -158,6 +162,18 @@
     setInterval(() => save(), 5000);
   }
   
+  function copyStringToClipboard(str) {
+    const el = document.createElement("textarea");
+    el.value = str;
+    el.setAttribute("readonly", "");
+    el.style.position = "absolute";
+    el.style.left = "-9999px";
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+  }
+  
   function importSave() {
     try {
       const txt = prompt("Copy-paste your save. WARNING: WILL OVERWRITE YOUR SAVE");
@@ -165,12 +181,12 @@
       save();
       location.reload();
     } catch (e) {
-      console.log(e);
+      if (DEBUG) console.log(e);
     }
   }
   
   function exportSave() {
-    prompt("Copy-paste the following save:", btoa(JSON.stringify(game)));
+    copyStringToClipboard(btoa(JSON.stringify(game)));
   }
   
   function hardReset() {
@@ -205,8 +221,10 @@
   
   document.getElementById("app").style.display = "";
   
+  Object.defineProperty(global, "VERSION", { value: VERSION });
+  
   if (DEBUG) {
-    const dev = {
+    global.dev = {
       game,
       newGame,
       NaNerror,
@@ -224,11 +242,11 @@
       save,
       loadGame,
       load,
+      copyStringToClipboard,
       importSave,
       exportSave,
       hardReset,
       app
     };
-    global.dev = dev;
   }
 })(this);
