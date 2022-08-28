@@ -27,19 +27,19 @@
     timeStarted: Date.now(),
     lastTick: Date.now(),
     offlineProg: true,
-    highestNumber: 0,
-    number: 0,
+    highestNumber: D(0),
+    number: D(0),
     compressors: [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0)
     ]
   };
   
@@ -67,53 +67,64 @@
   }
   
   function getNumberRate(t = 1) {
-    return 2 ** game.compressors.reduce((x, y) => x + y) * t;
+    return D.pow(2, game.compressors.reduce((x, y) => D.add(x, y))).mul(t);
   }
   
   function getCompressCost(x) {
-    return 10 ** (x * (game.compressors[x - 1] + 1));
+    return D.pow(10, game.compressors[x - 1].add(1).mul(x));
   }
   
   function format(number, int = false) {
-    if (isNaN(number)) {
+    number = D(number);
+    if (D.isNaN(number)) {
       NaNalert();
       return "NaN";
     }
-    if (number < 0) return "-" + format(-number);
-    if (number == Infinity) return "Infinity";
-    if (int && number < 999999.5) return number.toFixed(0);
-    if (number <= 9.9995) number.toFixed(3);
-    if (number < 1000) return number.toPrecision(4);
-    if (number < 999999.5) return number.toFixed(0);
-    let exponent = Math.floor(Math.log10(number));
-    let mantissa = number / 10 ** exponent;
-    if (format(mantissa) === "10.00") {
-      mantissa = 1;
-      exponent++;
+    if (number.sign == -1) return "-" + format(-number);
+    if (!number.isFinite()) return "Infinity";
+    if (int && number.lt(1e6)) return number.toFixed(0);
+    if (number.lt(1000)) return number.toFixed(3);
+    if (number.lt(1e6)) return number.toFixed(0);
+    if (number.lt("e1e6")) {
+      let exponent = number.e;
+      let mantissa = number.m;
+      if (format(mantissa) === "10.000") {
+        mantissa = 1;
+        exponent++;
+      }
+      return format(mantissa) + "e" + format(exponent, true);
     }
-    return format(mantissa) + "e" + exponent.toFixed(0);
+    if (number.lt(D.tetrate(10, 6))) {
+      return "e" + format(number.log10());
+    }
+    return "10^^" + format(number.slog(), true);
   }
   
   function formatTime(time, int = false) {
-    if (time == Infinity) return "forever";
-    if (time < 60) return format(time, int) + " seconds";
-    if (time < 3600) return format(Math.floor(time / 60), true) + " minutes " +
-      format(time % 60, int) + " seconds";
-    if (time < 86400) return format(Math.floor(time / 3600), true) + " hours " +
-      format(Math.floor(time / 60) % 60, true) + " minutes " +
-      format(time % 60, int) + " seconds";
-    if (time < 31536000) return format(Math.floor(time / 86400), true) + " days " +
-      format(Math.floor(time / 3600) % 24, true) + " hours " +
-      format(Math.floor(time / 60) % 60, true) + " minutes";
-    if (time < 31536000000) return format(Math.floor(time / 31536000), true) + " years " +
-      format(Math.floor(time / 86400) % 365, true) + " days";
-    return format(time / 31536000) + " years";
+    time = D(time);
+    if (D.isNaN(time)) {
+      NaNalert();
+      return "NaN seconds";
+    }
+    if (!D.isFinite(time)) return "forever";
+    if (time.lt(60)) return format(time, int) + " seconds";
+    if (time.lt(3600)) return format(time.div(60).floor(), true) + " minutes " +
+      format(time.sub(time.div(60).floor().mul(60)), int) + " seconds";
+    if (time.lt(86400)) return format(time.div(3600).floor(), true) + " hours " +
+      format(time.div(60).floor().sub(time.div(3600).floor().mul(60)), true) + " minutes " +
+      format(time.sub(time.div(60).floor().mul(60)), int) + " seconds";
+    if (time.lt(31536000)) return format(time.div(86400).floor(), true) + " days " +
+      format(time.div(3600).floor().sub(time.div(86400).floor().mul(24)), true) + " hours " +
+      format(time.div(60).floor().sub(time.div(3600).floor().mul(60)), true) + " minutes";
+    if (time.lt(31536000000)) return format(time.div(31536000).floor(), true) + " years " +
+      format(time.div(86400).floor().sub(time.div(31536000).floor().mul(365)), true) + " days";
+    return format(time.div(31536000)) + " years";
   }
   
   function compress(x) {
-    if (game.number >= getCompressCost(x)) {
-      game.number -= getCompressCost(x);
-      game.compressors[x - 1]++;
+    if (game.number.gte(getCompressCost(x))) {
+      game.number = game.number.sub(getCompressCost(x));
+      game.compressors[x - 1] = game.compressors[x - 1].add(1);
     }
   }
   
@@ -126,8 +137,8 @@
   function loop(time) {
     if (!NaNerror && checkNaNs()) NaNalert();
     if (NaNerror) return;
-    game.number += getNumberRate(time);
-    game.highestNumber = Math.max(game.number, game.highestNumber);
+    game.number = game.number.add(getNumberRate(time));
+    game.highestNumber = D.max(game.number.max, game.highestNumber);
   }
   
   function simulateTime(ms) {
@@ -138,9 +149,10 @@
     }
   }
   
-  function save() {
-    if (NaNerror) return;
-    localStorage.setItem("TheNumberLineSave", btoa(JSON.stringify(game)));
+  function transformSaveToDecimal() {
+    game.number = D(game.number);
+    game.highestNumber = D(game.highestNumber);
+    for (let i = 0; i < 10; i++) game.compressors[i] = D(game.compressors[i]);
   }
   
   function loadGame(loadgame) {
@@ -148,11 +160,17 @@
       game[i] = loadgame[i];
     }
     game.version = VERSION;
+    transformSaveToDecimal();
     const diff = Date.now() - game.lastTick;
     console.log(diff);
     if (game.offlineProg) {
       simulateTime(diff, true);
     }
+  }
+  
+  function save() {
+    if (NaNerror) return;
+    localStorage.setItem("TheNumberLineSave", btoa(JSON.stringify(game)));
   }
   
   function load() {
@@ -241,8 +259,8 @@
       reset,
       loop,
       simulateTime,
-      save,
       loadGame,
+      save,
       load,
       copyStringToClipboard,
       importSave,
