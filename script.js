@@ -7,14 +7,14 @@
 (function(global) {
   "use strict";
   
-  if (btoa(location.href) != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pby9UaGUtTnVtYmVyLUxpbmUv") {
+  if (btoa(location.origin) != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pbw==") {
     document.getElementById("fake").style.display = "";
     return;
   }
   
-  const Vue = global.Vue;
+  const DEBUG = true;
   
-  let NaNerror = false;
+  const Vue = global.Vue;
   
   const game = Vue.reactive({});  
   
@@ -38,6 +38,8 @@
       0
     ]
   };
+  
+  let NaNerror = false;
   
   function NaNalert() {
     NaNerror = true;
@@ -180,7 +182,7 @@
   
   load();
   
-  Vue.createApp({
+  const app = Vue.createApp({
     data() {
       return {
         game,
@@ -197,7 +199,36 @@
         formatTime
       };
     }
-  }).mount("#app");
+  });
+  
+  app.mount("#app");
   
   document.getElementById("app").style.display = "";
+  
+  if (DEBUG) {
+    const dev = {
+      game,
+      newGame,
+      NaNerror,
+      NaNalert,
+      checkNaNs,
+      timePlayed,
+      getNumberRate,
+      getCompressCost,
+      format,
+      formatTime,
+      compress,
+      reset,
+      loop,
+      simulateTime,
+      save,
+      loadGame,
+      load,
+      importSave,
+      exportSave,
+      hardReset,
+      app
+    };
+    global.dev = dev;
+  }
 })(this);
