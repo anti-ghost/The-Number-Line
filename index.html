@@ -27,20 +27,20 @@
       <h1>Number: {{format(game.number)}}</h1>
       <p>Your number is increasing by {{format(getNumberRate())}} per second</p>
       <p>
-        <button @click="tab = 0" class="tabButton">
+        <button @click="tabs.tab = 0" class="tabButton">
           Compressors
         </button>
-        <button @click="tab = 1" class="tabButton">
+        <button @click="tabs.tab = 1" class="tabButton">
           Options
         </button>
-        <button @click="tab = 2" class="tabButton">
+        <button @click="tabs.tab = 2" class="tabButton">
           Statistics
         </button>
-        <button @click="tab = 3" v-if="game.exponentUnlocked" class="tabButton exponentButton">
+        <button @click="tabs.tab = 3" v-if="game.expUnlocked" class="tabButton exponentButton">
           Exponents
         </button>
       </p>
-      <div v-if="tab == 0">
+      <div v-if="tabs.tab == 0">
         <table>
           <tbody>
             <tr>
@@ -116,7 +116,7 @@
           </tbody>
         </table>
       </div>
-      <div v-if="tab == 1">
+      <div v-if="tabs.tab == 1">
         <table>
           <tbody>
             <tr>
@@ -139,11 +139,11 @@
           </small>
         </p>
       </div>
-      <div v-if="tab == 2">
+      <div v-if="tabs.tab == 2">
         <p>You have played for {{formatTime(timePlayed() / 1000)}}.</p>
         <p>Your highest number was {{format(game.highestNumber)}}.</p>
       </div>
-      <div v-if="tab == 3">
+      <div v-if="tabs.tab == 3">
         <h2>You have {{format(game.exponents)}} exponents</h2>
         <p>
           <button @click="exponentiate()" class="exponentiateButton prestigeButton">
