@@ -44,7 +44,16 @@
       D(0),
       D(0)
     ],
-    exponentUnlocked: false
+    expUnlocked: false,
+    exponents: D(0),
+    upgrades: []
+  };
+  
+  const UPGRADE_COSTS = [D(1), D(1), D(2), D(Infinity)];
+  
+  const tabs = {
+    tab: 0,
+    expSubtab: 0
   };
   
   let NaNerror = false;
@@ -80,8 +89,16 @@
     return D.pow10(e);
   }
   
+  function canCompress(x) {
+    return game.number.gte(getCompressCost(x));
+  }
+  
   function getExponentGain(x = game.number) {
     return x.div(1e12).root(12).floor();
+  }
+  
+  function canUpgrade(x) {
+    return game.exponents.gte(UPGRADE_COSTS[x - 1]);
   }
   
   function format(number, f = 0) {
@@ -157,12 +174,19 @@
     }
   }
   
+  function upgrade(x) {
+    if (canUpgrade(x)) {
+      game.exponents = game.exponents.sub(UPGRADE_COSTS[x - 1]);
+      game.upgrades.push(x);
+    }
+  }
+  
   function loop(time) {
     if (!NaNerror && checkNaNs()) NaNalert();
     if (NaNerror) return;
     game.number = game.number.add(getNumberRate(time));
     if (game.number.gt(game.highestNumber)) game.highestNumber = game.number;
-    if (!game.exponentUnlocked && game.number.gte(1e12)) game.exponentUnlocked = true;
+    if (!game.expUnlocked && game.number.gte(1e12)) game.expUnlocked = true;
   }
   
   function simulateTime(ms) {
@@ -272,7 +296,7 @@
         $,
         D,
         game,
-        tab: 0,
+        tabs,
         save,
         importSave,
         exportSave,
@@ -299,20 +323,24 @@
       speed: 1,
       game,
       newGame,
+      UPGRADE_COSTS,
       NaNerror,
       NaNalert,
       checkNaNs,
       timePlayed,
       getNumberRate,
       getCompressCost,
+      canCompress,
       getExponentGain,
+      canUpgrade,
       format,
       formatTime,
       compress,
       exponentiate,
-      reset,
+      upgrade,
       loop,
       simulateTime,
+      reset,
       loadGame,
       save,
       load,
