@@ -18,6 +18,8 @@
   
   const Vue = global.Vue;
   
+  const $ = global.$;
+  
   const D = global.Decimal;
   
   const game = Vue.reactive({});  
@@ -187,7 +189,7 @@
   
   function loadGame(loadgame) {
     if (loadgame.debug && !DEBUG) {
-      alert("Import failed, attempted to load development save into the main game.");
+      $.notify("Import failed, attempted to load development save into the main game.", "error");
       return;
     }
     for (const i in loadgame) {
@@ -203,12 +205,16 @@
     }
   }
   
-  function save() {
-    if (NaNerror) return;
+  function save(auto = false) {
+    if (NaNerror) {
+      if (auto) $.notify("Save failed, attempted to save a broken game", "error");
+      return;
+    }
     localStorage.setItem(
       DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave",
       btoa(JSON.stringify(game))
     );
+    if (auto) $.notify("Game saved", "success");
   }
   
   function load() {
@@ -245,8 +251,9 @@
   
   function exportSave() {
     copyStringToClipboard(btoa(JSON.stringify(game)));
+    $.notify("Copied to clipboard", "success"");
     if (DEBUG) {
-      alert("Warning! This is a development save. You will not be able to import this save into the main game.");
+      $.notify("Warning! This is a development save. You will not be able to import this save into the main game.", "warn");
     }
   }
   
@@ -262,6 +269,7 @@
   const app = Vue.createApp({
     data() {
       return {
+        $,
         D,
         game,
         tab: 0,
