@@ -30,6 +30,9 @@
         <button @click="tab = 2" class="tabButton">
           Statistics
         </button>
+        <button @click="tab = 3" class="tabButton exponentButton">
+          Exponents
+        </button>
       </p>
       <div v-if="tab == 0">
         <table>
@@ -38,13 +41,13 @@
               <td>
                 <button @click="compress(1)" class="compressButton">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(1), true)}}
+                  Cost: {{format(getCompressCost(1))}}
                 </button>
               </td>
               <td>
                 <button @click="compress(2)" class="compressButton">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(2), true)}}
+                  Cost: {{format(getCompressCost(2))}}
                 </button>
               </td>
             </tr>
@@ -52,13 +55,13 @@
               <td>
                 <button @click="compress(3)" class="compressButton">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(3), true)}}
+                  Cost: {{format(getCompressCost(3))}}
                 </button>
               </td>
               <td>
                 <button @click="compress(4)" class="compressButton">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(4), true)}}
+                  Cost: {{format(getCompressCost(4))}}
                 </button>
               </td>
             </tr>
@@ -66,13 +69,13 @@
               <td>
                 <button @click="compress(5)" class="compressButton">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(5), true)}}
+                  Cost: {{format(getCompressCost(5))}}
                 </button>
               </td>
               <td>
                 <button @click="compress(6)" class="compressButton">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(6), true)}}
+                  Cost: {{format(getCompressCost(6))}}
                 </button>
               </td>
             </tr>
@@ -80,13 +83,13 @@
               <td>
                 <button @click="compress(7)" class="compressButton">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(7), true)}}
+                  Cost: {{format(getCompressCost(7))}}
                 </button>
               </td>
               <td>
                 <button @click="compress(8)" class="compressButton">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(8), true)}}
+                  Cost: {{format(getCompressCost(8))}}
                 </button>
               </td>
             </tr>
@@ -94,13 +97,13 @@
               <td>
                 <button @click="compress(9)" class="compressButton">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(9), true)}}
+                  Cost: {{format(getCompressCost(9))}}
                 </button>
               </td>
               <td>
                 <button @click="compress(10)" class="compressButton">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(10), true)}}
+                  Cost: {{format(getCompressCost(10))}}
                 </button>
               </td>
             </tr>
@@ -133,6 +136,9 @@
       <div v-if="tab == 2">
         <p>You have played for {{formatTime(timePlayed() / 1000)}}.</p>
         <p>Your highest number was {{format(game.highestNumber)}}.</p>
+      </div>
+      <div v-if="tab == 3">
+        <h2>You have {{format(game.exponents)}} exponents</h2>
       </div>
     </div>
     <div id="fake" style="display: none;">
