@@ -12,17 +12,18 @@
     return;
   }
   
-  const DEBUG = true;
+  const DEBUG = location.href != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pby9UaGUtTnVtYmVyLUxpbmUv";
   
   const VERSION = "1.0.0";
   
   const Vue = global.Vue;
   
-  const D = Decimal;
+  const D = global.Decimal;
   
   const game = Vue.reactive({});  
   
   const newGame = {
+    debug: DEBUG,
     version: VERSION,
     timeStarted: Date.now(),
     lastTick: Date.now(),
@@ -47,7 +48,7 @@
   
   function NaNalert() {
     NaNerror = true;
-    exportSave();
+    copyStringToClipboard(btoa(JSON.stringify(game)));
     alert(
       "We have detected a NaN in your save! We have exported it to your clipboard (although it might be broken). " +
       "Please report this save to the developers of The Number Line, so they can look into it."
@@ -74,7 +75,7 @@
     return D.pow(10, game.compressors[x - 1].add(1).mul(x));
   }
   
-  function format(number, int = false) {
+  function format(number, f = 0) {
     number = D(number);
     if (D.isNaN(number)) {
       NaNalert();
@@ -82,9 +83,8 @@
     }
     if (number.sign == -1) return "-" + format(-number);
     if (!number.isFinite()) return "Infinity";
-    if (int && number.lt(1e6)) return number.toFixed(0);
-    if (number.lt(1000)) return number.toFixed(3);
-    if (number.lt(1e6)) return number.toFixed(0);
+    if (number.lt(1000)) return number.toNumber().toFixed(f);
+    if (number.lt(1e6)) return number.toNumber().toFixed(0);
     if (number.lt("e1e6")) {
       let exponent = number.e;
       let mantissa = number.m;
@@ -100,19 +100,19 @@
     return "10^^" + format(number.slog(), true);
   }
   
-  function formatTime(time, int = false) {
+  function formatTime(time, f = 0) {
     time = D(time);
     if (D.isNaN(time)) {
       NaNalert();
       return "NaN seconds";
     }
     if (!D.isFinite(time)) return "forever";
-    if (time.lt(60)) return format(time, int) + " seconds";
+    if (time.lt(60)) return format(time, f) + " seconds";
     if (time.lt(3600)) return format(time.div(60).floor(), true) + " minutes " +
-      format(time.sub(time.div(60).floor().mul(60)), int) + " seconds";
+      format(time.sub(time.div(60).floor().mul(60)), f) + " seconds";
     if (time.lt(86400)) return format(time.div(3600).floor(), true) + " hours " +
       format(time.div(60).floor().sub(time.div(3600).floor().mul(60)), true) + " minutes " +
-      format(time.sub(time.div(60).floor().mul(60)), int) + " seconds";
+      format(time.sub(time.div(60).floor().mul(60)), f) + " seconds";
     if (time.lt(31536000)) return format(time.div(86400).floor(), true) + " days " +
       format(time.div(3600).floor().sub(time.div(86400).floor().mul(24)), true) + " hours " +
       format(time.div(60).floor().sub(time.div(3600).floor().mul(60)), true) + " minutes";
@@ -156,9 +156,14 @@
   }
   
   function loadGame(loadgame) {
+    if (loadgame.debug && !DEBUG) {
+      alert("Import failed, attempted to load development save into the main game.");
+      return;
+    }
     for (const i in loadgame) {
       game[i] = loadgame[i];
     }
+    game.debug = DEBUG;
     game.version = VERSION;
     transformSaveToDecimal();
     const diff = Date.now() - game.lastTick;
@@ -170,13 +175,16 @@
   
   function save() {
     if (NaNerror) return;
-    localStorage.setItem("TheNumberLineSave", btoa(JSON.stringify(game)));
+    localStorage.setItem(
+      DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave",
+      btoa(JSON.stringify(game))
+    );
   }
   
   function load() {
     reset();
-    if (localStorage.getItem("TheNumberLineSave") !== null) {
-      loadGame(JSON.parse(atob(localStorage.getItem("TheNumberLineSave"))));
+    if (localStorage.getItem(DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave") !== null) {
+      loadGame(JSON.parse(atob(localStorage.getItem(DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave"))));
     }
     setInterval(() => simulateTime(Date.now() - game.lastTick), 0);
     setInterval(() => save(), 5000);
@@ -207,11 +215,14 @@
   
   function exportSave() {
     copyStringToClipboard(btoa(JSON.stringify(game)));
+    if (DEBUG) {
+      alert("Warning! This is a development save. You will not be able to import this save into the main game.");
+    }
   }
   
   function hardReset() {
     if (prompt('Are you sure you want to reset your game? This cannot be undone! Type "reset" without quotation marks to reset your game.') === "reset") {
-      localStorage.removeItem("TheNumberLineSave");
+      localStorage.removeItem(DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave");
       location.reload();
     }
   }
@@ -221,6 +232,7 @@
   const app = Vue.createApp({
     data() {
       return {
+        D,
         game,
         tab: 0,
         save,
@@ -241,6 +253,7 @@
   
   document.getElementById("app").style.display = "";
   
+  Object.defineProperty(global, "DEBUG", { value: DEBUG });
   Object.defineProperty(global, "VERSION", { value: VERSION });
   
   if (DEBUG) {
