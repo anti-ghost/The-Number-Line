@@ -114,7 +114,7 @@
       NaNalert();
       return "NaN seconds";
     }
-    if (!D.isFinite(time)) return "forever";
+    if (time.isFinite()) return "forever";
     if (time.lt(60)) return format(time, f) + " seconds";
     if (time.lt(3600)) return format(time.div(60).floor(), true) + " minutes " +
       format(time.sub(time.div(60).floor().mul(60)), f) + " seconds";
@@ -166,6 +166,7 @@
   function simulateTime(ms) {
     if (NaNerror) return;
     game.lastTick = Date.now();
+    if (DEBUG) ms *= dev.speed;
     for (let i = 0; i < 10; i++) {
       loop(ms / 10000);
     }
@@ -287,6 +288,7 @@
   
   if (DEBUG) {
     global.dev = {
+      speed: 1,
       game,
       newGame,
       NaNerror,
