@@ -73,7 +73,9 @@
   }
   
   function getCompressCost(x) {
-    return D.pow(10, game.compressors[x - 1].add(1).mul(x));
+    let e = game.compressors[x - 1].add(1).mul(x);
+    if (e.gt(12)) e = D.pow10(e.div(12).sub(1)).mul(12).div(D.ln(10)).add(12).sub(D.div(12, D.ln(10)));
+    return D.pow10(e);
   }
   
   function getExponentGain(x = game.number) {
@@ -82,18 +84,19 @@
   
   function format(number, f = 0) {
     number = D(number);
-    if (D.isNaN(number)) {
+    if (number.isNaN()) {
       NaNalert();
       return "NaN";
     }
     if (number.sign == -1) return "-" + format(-number);
     if (!number.isFinite()) return "Infinity";
+    if (number.sign == 0) return "0";
     if (number.lt(1000)) return number.toNumber().toFixed(f);
     if (number.lt(1e6)) return number.toNumber().toFixed(0);
     if (number.lt("e1e6")) {
       let exponent = number.e;
       let mantissa = number.m;
-      if (format(mantissa) === "10.000") {
+      if (format(mantissa, 3) === "10.000") {
         mantissa = 1;
         exponent++;
       }
