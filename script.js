@@ -51,10 +51,10 @@
   
   const UPGRADE_COSTS = [D(1), D(1), D(2), D(Infinity)];
   
-  const tabs = {
+  const tabs = Vue.reactive({
     tab: 0,
     expSubtab: 0
-  };
+  });
   
   let NaNerror = false;
   
@@ -324,6 +324,7 @@
       game,
       newGame,
       UPGRADE_COSTS,
+      tabs,
       NaNerror,
       NaNalert,
       checkNaNs,
