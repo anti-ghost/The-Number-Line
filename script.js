@@ -28,8 +28,8 @@
     timeStarted: Date.now(),
     lastTick: Date.now(),
     offlineProg: true,
-    highestNumber: D(0),
     number: D(0),
+    highestNumber: D(0),
     compressors: [
       D(0),
       D(0),
@@ -41,7 +41,8 @@
       D(0),
       D(0),
       D(0)
-    ]
+    ],
+    exponentUnlocked: false
   };
   
   let NaNerror = false;
@@ -73,6 +74,10 @@
   
   function getCompressCost(x) {
     return D.pow(10, game.compressors[x - 1].add(1).mul(x));
+  }
+  
+  function getExponentGain(x = game.number) {
+    return x.div(1e12).root(12).floor();
   }
   
   function format(number, f = 0) {
@@ -128,9 +133,22 @@
     }
   }
   
-  function reset(obj = newGame) {
-    for (const i in obj) {
-      game[i] = obj[i];
+  function exponentiate() {
+    if (game.number.gte(1e12)) {
+      game.exponents = game.exponents.add(getExponentGain());
+      game.number = D(0);
+      game.compressors = [
+        D(0),
+        D(0),
+        D(0),
+        D(0),
+        D(0),
+        D(0),
+        D(0),
+        D(0),
+        D(0),
+        D(0)
+      ];
     }
   }
   
@@ -138,7 +156,8 @@
     if (!NaNerror && checkNaNs()) NaNalert();
     if (NaNerror) return;
     game.number = game.number.add(getNumberRate(time));
-    game.highestNumber = D.max(game.number.max, game.highestNumber);
+    if (game.number.gt(game.highestNumber)) game.highestNumber = game.number;
+    if (!game.exponentUnlocked && game.number.gte(1e12)) game.exponentUnlocked = true;
   }
   
   function simulateTime(ms) {
@@ -153,6 +172,13 @@
     game.number = D(game.number);
     game.highestNumber = D(game.highestNumber);
     for (let i = 0; i < 10; i++) game.compressors[i] = D(game.compressors[i]);
+    game.exponents = D(game.exponents);
+  }
+  
+  function reset(obj = newGame) {
+    for (const i in obj) {
+      game[i] = obj[i];
+    }
   }
   
   function loadGame(loadgame) {
@@ -266,9 +292,11 @@
       timePlayed,
       getNumberRate,
       getCompressCost,
+      getExponentGain,
       format,
       formatTime,
       compress,
+      exponentiate,
       reset,
       loop,
       simulateTime,
