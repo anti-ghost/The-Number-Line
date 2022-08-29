@@ -89,7 +89,7 @@
       return "NaN";
     }
     if (number.sign == -1) return "-" + format(-number);
-    if (!number.isFinite()) return "Infinity";
+    if (number.eq(Infinity)) return "Infinity";
     if (number.sign == 0) return "0";
     if (number.lt(1000)) return number.toNumber().toFixed(f);
     if (number.lt(1e6)) return number.toNumber().toFixed(0);
@@ -110,11 +110,11 @@
   
   function formatTime(time, f = 0) {
     time = D(time);
-    if (D.isNaN(time)) {
+    if (time.isNaN()) {
       NaNalert();
       return "NaN seconds";
     }
-    if (time.isFinite()) return "forever";
+    if (time.eq(Infinity)) return "forever";
     if (time.lt(60)) return format(time, f) + " seconds";
     if (time.lt(3600)) return format(time.div(60).floor(), true) + " minutes " +
       format(time.sub(time.div(60).floor().mul(60)), f) + " seconds";
