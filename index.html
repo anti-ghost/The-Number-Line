@@ -31,7 +31,7 @@
         <button @click="tab = 2" class="tabButton">
           Statistics
         </button>
-        <button @click="tab = 3" class="tabButton exponentButton">
+        <button @click="tab = 3" v-if="game.exponentUnlocked" class="tabButton exponentButton">
           Exponents
         </button>
       </p>
@@ -140,6 +140,26 @@
       </div>
       <div v-if="tab == 3">
         <h2>You have {{format(game.exponents)}} exponents</h2>
+        <p>
+          <button @click="exponentiate()" class="exponentiateButton prestigeButton">
+            {{game.number.gte(1e12) ? "Exponentiate for " + format(getExponentGain()) + " exponents" : "Reach 1.000e12 to Exponentiate"}}
+          </button>
+        </p>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <button @click="upgrade(1)" class="exponentiateButton upgradeButton">
+                  Multiply Number gain by the total number of Compressors<br />
+                  Cost: 1 Exponent
+                </button>
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <div id="fake" style="display: none;">
