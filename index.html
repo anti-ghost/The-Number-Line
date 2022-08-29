@@ -45,13 +45,13 @@
           <tbody>
             <tr>
               <td>
-                <button @click="compress(1)" class="compressButton">
+                <button @click="compress(1)" class="upgradeButton" @class="canCompress(1) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
                   Cost: {{format(getCompressCost(1))}}
                 </button>
               </td>
               <td>
-                <button @click="compress(2)" class="compressButton">
+                <button @click="compress(2)" class="upgradeButton" @class="canCompress(2) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
                   Cost: {{format(getCompressCost(2))}}
                 </button>
@@ -59,13 +59,13 @@
             </tr>
             <tr>
               <td>
-                <button @click="compress(3)" class="compressButton">
+                <button @click="compress(3)" class="upgradeButton" @class="canCompress(3) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
                   Cost: {{format(getCompressCost(3))}}
                 </button>
               </td>
               <td>
-                <button @click="compress(4)" class="compressButton">
+                <button @click="compress(4)" class="upgradeButton" @class="canCompress(4) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
                   Cost: {{format(getCompressCost(4))}}
                 </button>
@@ -73,13 +73,13 @@
             </tr>
             <tr>
               <td>
-                <button @click="compress(5)" class="compressButton">
+                <button @click="compress(5)" class="upgradeButton" @class="canCompress(5) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
                   Cost: {{format(getCompressCost(5))}}
                 </button>
               </td>
               <td>
-                <button @click="compress(6)" class="compressButton">
+                <button @click="compress(6)" class="upgradeButton" @class="canCompress(6) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
                   Cost: {{format(getCompressCost(6))}}
                 </button>
@@ -87,13 +87,13 @@
             </tr>
             <tr>
               <td>
-                <button @click="compress(7)" class="compressButton">
+                <button @click="compress(7)" class="upgradeButton" @class="canCompress(7) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
                   Cost: {{format(getCompressCost(7))}}
                 </button>
               </td>
               <td>
-                <button @click="compress(8)" class="compressButton">
+                <button @click="compress(8)" class="upgradeButton" @class="canCompress(8) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
                   Cost: {{format(getCompressCost(8))}}
                 </button>
@@ -101,13 +101,13 @@
             </tr>
             <tr>
               <td>
-                <button @click="compress(9)" class="compressButton">
+                <button @click="compress(9)" class="upgradeButton" @class="canCompress(9) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
                   Cost: {{format(getCompressCost(9))}}
                 </button>
               </td>
               <td>
-                <button @click="compress(10)" class="compressButton">
+                <button @click="compress(10)" class="upgradeButton" @class="canCompress(10) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
                   Cost: {{format(getCompressCost(10))}}
                 </button>
