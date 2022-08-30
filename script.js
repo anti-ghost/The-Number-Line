@@ -197,12 +197,20 @@
     }
   }
   
-  function toggle(x) {
-    game[x] = !game[x];
+  function onOff(x) {
+    return x ? "ON" : "OFF";
   }
   
-  function onOff(x) {
-    return game[x] ? "ON" : "OFF";
+  function enableDisable(x) {
+    return x ? "Disable" : "Enable";
+  }
+  
+  function enableAutobuyers() {
+    for (let i = 0; i < 10; i++) game.autobuyers[i] = true;
+  }
+  
+  function disableAutobuyers() {
+    for (let i = 0; i < 10; i++) game.autobuyers[i] = false;
   }
   
   function buyMax(x) {
@@ -343,8 +351,10 @@
         compress,
         exponentiate,
         upgrade,
-        toggle,
         onOff,
+        enableDisable,
+        enableAutobuyers,
+        disableAutobuyers,
         timePlayed,
         getNumberRate,
         getCompressCost,
@@ -384,8 +394,10 @@
       compress,
       exponentiate,
       upgrade,
-      toggle,
       onOff,
+      enableDisable,
+      enableAutobuyers,
+      disableAutobuyers,
       buyMax,
       loop,
       simulateTime,
