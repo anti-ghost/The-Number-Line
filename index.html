@@ -36,7 +36,7 @@
         <button @click="tabs.tab = 2" class="tabButton">
           Statistics
         </button>
-        <button @click="tabs.tab = 3" v-if="game.expUnlocked" class="tabButton exponentButton">
+        <button @click="tabs.tab = 3" v-if="game.expUnlocked || game.number.gte(1e12)" class="tabButton exponentButton">
           Exponents
         </button>
       </p>
@@ -115,6 +115,10 @@
             </tr>
           </tbody>
         </table>
+        <p v-if="game.expUnlocked">
+          <span style="color: red;"><strong>WARNING:</strong></span> Compressor costs scale faster beyond 1.000e12:
+          10<sup><var>x</var></sup> → 10<sup>10<sup><var>x</var>/12-1</sup>*(12/ln(10))+12-12/ln(10)</sup>
+        </p>
       </div>
       <div v-if="tabs.tab == 1">
         <table>
