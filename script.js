@@ -157,6 +157,7 @@
   
   function exponentiate() {
     if (game.number.gte(1e12)) {
+      game.expUnlocked = true;
       game.exponents = game.exponents.add(getExponentGain());
       game.number = D(0);
       game.compressors = [
@@ -186,7 +187,6 @@
     if (NaNerror) return;
     game.number = game.number.add(getNumberRate(time));
     if (game.number.gt(game.highestNumber)) game.highestNumber = game.number;
-    if (!game.expUnlocked && game.number.gte(1e12)) game.expUnlocked = true;
   }
   
   function simulateTime(ms) {
