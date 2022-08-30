@@ -46,7 +46,19 @@
     ],
     expUnlocked: false,
     exponents: D(0),
-    upgrades: []
+    upgrades: [],
+    autobuyers: [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
   };
   
   const UPGRADE_COSTS = [D(1), D(1), D(2), D(Infinity)];
@@ -185,11 +197,35 @@
     }
   }
   
+  function toggle(x) {
+    game[x] = !game[x];
+  }
+  
+  function onOff(x) {
+    return game[x] ? "ON" : "OFF";
+  }
+  
+  function buyMax(x) {
+    const c = game.compressors[x - 1]
+      .add(D.affordGeometricSeries(game.number, 10 ** x, 10 ** x, game.compressors[x - 1]))
+      .min(12 / x)
+      .floor(),
+      n = D.sumGeometricSeries(c.sub(game.compressors[x - 1]), 10 ** x, 10 ** x, game.compressors[x - 1]);
+    game.compressors[x - 1] = c;
+    game.number = game.number.sub(n);
+    while (canCompress(x)) compress(x);
+  }
+  
   function loop(time) {
     if (!NaNerror && checkNaNs()) NaNalert();
     if (NaNerror) return;
     game.number = game.number.add(getNumberRate(time));
     if (game.number.gt(game.highestNumber)) game.highestNumber = game.number;
+    if (game.upgrades.includes(2)) {
+      for (let i = 0; i < 10; i++) {
+        if (game.autobuyers[i]) buyMax(i + 1);
+      }
+    }
   }
   
   function simulateTime(ms) {
@@ -307,6 +343,8 @@
         compress,
         exponentiate,
         upgrade,
+        toggle,
+        onOff,
         timePlayed,
         getNumberRate,
         getCompressCost,
@@ -346,6 +384,9 @@
       compress,
       exponentiate,
       upgrade,
+      toggle,
+      onOff,
+      buyMax,
       loop,
       simulateTime,
       reset,
