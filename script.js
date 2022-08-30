@@ -80,7 +80,10 @@
   }
   
   function getNumberRate(t = 1) {
-    return D.pow(2, game.compressors.reduce((x, y) => D.add(x, y))).mul(t);
+    let rate = D.pow(2, game.compressors.reduce((x, y) => x.add(y)));
+    if (game.upgrades.includes(1)) rate = rate.mul(game.compressors.reduce((x, y) => x.add(y)).add(1));
+    if (game.upgrades.includes(3)) rate = rate.mul(game.exponents.add(1).sqrt());
+    return rate.mul(t);
   }
   
   function getCompressCost(x) {
@@ -302,9 +305,13 @@
         exportSave,
         hardReset,
         compress,
+        exponentiate,
+        upgrade,
         timePlayed,
         getNumberRate,
         getCompressCost,
+        canCompress,
+        canUpgrade,
         format,
         formatTime
       };
