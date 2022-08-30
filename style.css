@@ -23,7 +23,6 @@ button {
   border-style: solid;
   border-radius: 4px;
   cursor: pointer;
-  transition-duration: 0.2s;
 }
 
 .tabButton {
@@ -32,7 +31,7 @@ button {
   height: 40px;
   margin: 0 4px;
   border-radius: 8px;
-  padding: 0 12px;
+  padding: 0 12px 0 12px;
 }
 
 .optionsButton {
@@ -60,4 +59,9 @@ button {
   background: lime;
   border-color: black;
   cursor: default;
+}
+
+.prestigeButton {
+  font-size: 16px;
+  padding: 4px 8px;
 }
