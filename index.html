@@ -150,13 +150,13 @@
       <div v-if="tabs.tab == 3">
         <h2>You have {{format(game.exponents)}} exponents</h2>
         <p>
-          <button @click="exponentiate()" class="exponentiateButton prestigeButton">
+          <button @click="exponentiate()" class="exponentButton prestigeButton">
             {{game.number.gte(1e12) ? "Exponentiate for " + format(getExponentGain()) + " exponents" : "Reach 1.000e12 to Exponentiate"}}
           </button>
         </p>
         <p>
-          <button @click="tabs.expSubtab == 1" class="exponentiateButton">Upgrades</button>
-          <button @click="tabs.expSubtab == 2" v-if="game.upgrades.includes(2)" class="exponentiateButton">Autobuyers</button>
+          <button @click="tabs.expSubtab == 1" class="exponentButton">Upgrades</button>
+          <button @click="tabs.expSubtab == 2" v-if="game.upgrades.includes(2)" class="exponentButton">Autobuyers</button>
         </p>
         <div v-if="tabs.expSubtab == 1">
           <table>
@@ -165,7 +165,7 @@
                 <td>
                   <button 
                     @click="upgrade(1)"
-                    class="exponentiateButton upgradeButton" 
+                    class="exponentButton upgradeButton" 
                     @class="game.upgrades.includes(1) ? 'bought' : canUpgrade(1) ? 'canBuy' : 'locked'"
                   >
                     Number gain is boosted by the total number of Compressors<br />
@@ -176,7 +176,7 @@
                 <td>
                   <button 
                     @click="upgrade(2)"
-                    class="exponentiateButton upgradeButton" 
+                    class="exponentButton upgradeButton" 
                     @class="game.upgrades.includes(2) ? 'bought' : canUpgrade(2) ? 'canBuy' : 'locked'"
                   >
                     Unlock autobuyers for Compressors<br />
@@ -186,7 +186,7 @@
                 <td>
                   <button 
                     @click="upgrade(3)"
-                    class="exponentiateButton upgradeButton" 
+                    class="exponentButton upgradeButton" 
                     @class="game.upgrades.includes(3) ? 'bought' : canUpgrade(3) ? 'canBuy' : 'locked'"
                   >
                     Number gain is boosted by Exponents<br />
@@ -195,7 +195,7 @@
                   </button>
                 </td>
                 <td>
-                  <button class="exponentiateButton upgradeButton locked">
+                  <button class="exponentButton upgradeButton locked">
                     ???
                   </button>
                 </td>
@@ -204,7 +204,16 @@
           </table>
         </div>
         <div v-if="tabs.expSubtab == 2">
-          
+          <p>
+            <button @click="enableAutobuyers()" class="exponentButton">Enable all</button>
+            <button @click="disableAutobuyers()" class="exponentButton">Disable all</button>
+          </p>
+          <p v-for="x in game.autobuyers">
+            Autobuyer {{x + 1}}: {{onOff(game.autobuyers[x])}}
+            <button @click="game.autobuyers[x] = !game.autobuyers[x]" class="exponentButton">
+              {{enableDisable(game.autobuyers[x])}}
+            </button>
+          </p>
         </div>
       </div>
     </div>
