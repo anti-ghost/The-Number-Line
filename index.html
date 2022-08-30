@@ -154,49 +154,58 @@
             {{game.number.gte(1e12) ? "Exponentiate for " + format(getExponentGain()) + " exponents" : "Reach 1.000e12 to Exponentiate"}}
           </button>
         </p>
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <button 
-                  @click="upgrade(1)"
-                  class="exponentiateButton upgradeButton" 
-                  @class="game.upgrades.includes(1) ? 'bought' : canUpgrade(1) ? 'canBuy' : 'locked'"
-                >
-                  Number gain is boosted by the total number of Compressors<br />
-                  Currently: x{{format(game.compressors.reduce((x, y) => x.add(y)).add(1))}}<br />
-                  Cost: 1 Exponent
-                </button>
-              </td>
-              <td>
-                <button 
-                  @click="upgrade(2)"
-                  class="exponentiateButton upgradeButton" 
-                  @class="game.upgrades.includes(2) ? 'bought' : canUpgrade(2) ? 'canBuy' : 'locked'"
-                >
-                  Unlock autobuyers for Compressors<br />
-                  Cost: 1 Exponent
-                </button>
-              </td>
-              <td>
-                <button 
-                  @click="upgrade(3)"
-                  class="exponentiateButton upgradeButton" 
-                  @class="game.upgrades.includes(3) ? 'bought' : canUpgrade(3) ? 'canBuy' : 'locked'"
-                >
-                  Number gain is boosted by Exponents<br />
-                  Currently: x{{format(game.exponents.add(1).sqrt(), 3)}}<br />
-                  Cost: 2 Exponents
-                </button>
-              </td>
-              <td>
-                <button class="exponentiateButton upgradeButton locked">
-                  ???
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <p>
+          <button @click="tabs.expSubtab == 1" class="exponentiateButton">Upgrades</button>
+          <button @click="tabs.expSubtab == 2" v-if="game.upgrades.includes(2)" class="exponentiateButton">Autobuyers</button>
+        </p>
+        <div v-if="tabs.expSubtab == 1">
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <button 
+                    @click="upgrade(1)"
+                    class="exponentiateButton upgradeButton" 
+                    @class="game.upgrades.includes(1) ? 'bought' : canUpgrade(1) ? 'canBuy' : 'locked'"
+                  >
+                    Number gain is boosted by the total number of Compressors<br />
+                    Currently: x{{format(game.compressors.reduce((x, y) => x.add(y)).add(1))}}<br />
+                    Cost: 1 Exponent
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(2)"
+                    class="exponentiateButton upgradeButton" 
+                    @class="game.upgrades.includes(2) ? 'bought' : canUpgrade(2) ? 'canBuy' : 'locked'"
+                  >
+                    Unlock autobuyers for Compressors<br />
+                    Cost: 1 Exponent
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(3)"
+                    class="exponentiateButton upgradeButton" 
+                    @class="game.upgrades.includes(3) ? 'bought' : canUpgrade(3) ? 'canBuy' : 'locked'"
+                  >
+                    Number gain is boosted by Exponents<br />
+                    Currently: x{{format(game.exponents.add(1).sqrt(), 3)}}<br />
+                    Cost: 2 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button class="exponentiateButton upgradeButton locked">
+                    ???
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div v-if="tabs.expSubtab == 2">
+          
+        </div>
       </div>
     </div>
     <div id="fake" style="display: none;">
