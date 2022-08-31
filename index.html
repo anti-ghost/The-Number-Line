@@ -116,7 +116,7 @@
           </tbody>
         </table>
         <p v-if="game.expUnlocked">
-          <span style="color: red;"><strong>WARNING:</strong></span> Compressor costs scale faster beyond 1.000e12:
+          <strong>WARNING:</strong> Compressor costs scale faster beyond 1.000e12:
           10<sup><var>x</var></sup> → 10<sup>10<sup><var>x</var>/12-1</sup>*(12/ln(10))+12-12/ln(10)</sup>
         </p>
       </div>
@@ -180,7 +180,7 @@
                     @class="game.upgrades.includes(2) ? 'bought' : canUpgrade(2) ? 'canBuy' : 'locked'"
                   >
                     Unlock autobuyers for Compressors<br />
-                    Cost: 1 Exponent
+                    Cost: 2 Exponents
                   </button>
                 </td>
                 <td>
@@ -191,7 +191,7 @@
                   >
                     Number gain is boosted by Exponents<br />
                     Currently: x{{format(game.exponents.add(1).sqrt(), 3)}}<br />
-                    Cost: 2 Exponents
+                    Cost: 3 Exponents
                   </button>
                 </td>
                 <td>
