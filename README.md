@@ -19,3 +19,14 @@ and multiplies your number gain by the total number of compressors you bought.
 ### Autobuyers
 When you buy the 2<sup>nd</sup> exponent upgrade, you unlock autobuyers. Autobuyers automate buying compressors.
 You may enable or disable each autobuyer individually.
+# Changelog
+This is a list of changes for The Number Line.
+## v0.0.0 – Initial Development
+### v0.1.0
+* First public release, added compressors
+## v1.0.0 – The Exponent Update
+* Added Exponents
+* Added support for Decimal
+* Major styling changes
+* Added How to Play page
+* Added changelog
