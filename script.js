@@ -61,7 +61,7 @@
     ]
   };
   
-  const UPGRADE_COSTS = [D(1), D(1), D(2), D(Infinity)];
+  const UPGRADE_COSTS = [D(1), D(2), D(3), D(Infinity)];
   
   const tabs = Vue.reactive({
     tab: 0,
