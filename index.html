@@ -47,13 +47,15 @@
               <td>
                 <button @click="compress(1)" class="upgradeButton" @class="canCompress(1) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(1))}}
+                  Cost: {{format(getCompressCost(1))}}<br />
+                  Amount: {{format(game.compressors[0])}}
                 </button>
               </td>
               <td>
                 <button @click="compress(2)" class="upgradeButton" @class="canCompress(2) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(2))}}
+                  Cost: {{format(getCompressCost(2))}}<br />
+                  Amount: {{format(game.compressors[1])}}
                 </button>
               </td>
             </tr>
@@ -61,13 +63,15 @@
               <td>
                 <button @click="compress(3)" class="upgradeButton" @class="canCompress(3) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(3))}}
+                  Cost: {{format(getCompressCost(3))}}<br />
+                  Amount: {{format(game.compressors[2])}}
                 </button>
               </td>
               <td>
                 <button @click="compress(4)" class="upgradeButton" @class="canCompress(4) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(4))}}
+                  Cost: {{format(getCompressCost(4))}}<br />
+                  Amount: {{format(game.compressors[3])}}
                 </button>
               </td>
             </tr>
@@ -75,13 +79,15 @@
               <td>
                 <button @click="compress(5)" class="upgradeButton" @class="canCompress(5) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(5))}}
+                  Cost: {{format(getCompressCost(5))}}<br />
+                  Amount: {{format(game.compressors[4])}}
                 </button>
               </td>
               <td>
                 <button @click="compress(6)" class="upgradeButton" @class="canCompress(6) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(6))}}
+                  Cost: {{format(getCompressCost(6))}}<br />
+                  Amount: {{format(game.compressors[5])}}
                 </button>
               </td>
             </tr>
@@ -89,13 +95,15 @@
               <td>
                 <button @click="compress(7)" class="upgradeButton" @class="canCompress(7) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(7))}}
+                  Cost: {{format(getCompressCost(7))}}<br />
+                  Amount: {{format(game.compressors[6])}}
                 </button>
               </td>
               <td>
                 <button @click="compress(8)" class="upgradeButton" @class="canCompress(8) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(8))}}
+                  Cost: {{format(getCompressCost(8))}}<br />
+                  Amount: {{format(game.compressors[7])}}
                 </button>
               </td>
             </tr>
@@ -103,13 +111,15 @@
               <td>
                 <button @click="compress(9)" class="upgradeButton" @class="canCompress(9) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(9))}}
+                  Cost: {{format(getCompressCost(9))}}<br />
+                  Amount: {{format(game.compressors[8])}}
                 </button>
               </td>
               <td>
                 <button @click="compress(10)" class="upgradeButton" @class="canCompress(10) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(10))}}
+                  Cost: {{format(getCompressCost(10))}}<br />
+                  Amount: {{format(game.compressors[9])}}
                 </button>
               </td>
             </tr>
@@ -133,6 +143,10 @@
             </tr>
           </tbody>
         </table>
+        <p>
+          <a href="howtoplay.html">How to play</a> |
+          <a href="changelog.html">Changelog</a>
+        </p>
         <p>
           <small>
             <i>
