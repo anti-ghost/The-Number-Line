@@ -117,7 +117,7 @@
   }
   
   function canUpgrade(x) {
-    return game.exponents.gte(UPGRADE_COSTS[x - 1]);
+    return (x == 1 || game.upgrades.includes(x - 2)) && game.exponents.gte(UPGRADE_COSTS[x - 1]);
   }
   
   function format(number, f = 0) {
