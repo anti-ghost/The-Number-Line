@@ -339,8 +339,6 @@
     }
   }
   
-  load();
-  
   const app = Vue.createApp({
     data() {
       return {
@@ -415,5 +413,7 @@
       hardReset,
       app
     };
-  }
+  }  
+  
+  load();
 })(this);
