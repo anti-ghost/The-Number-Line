@@ -360,6 +360,7 @@
         timePlayed,
         getNumberRate,
         getCompressCost,
+        getExponentGain,
         canCompress,
         canUpgrade,
         format,
