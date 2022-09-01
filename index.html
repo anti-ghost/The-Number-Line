@@ -169,10 +169,10 @@
           </button>
         </p>
         <p>
-          <button @click="tabs.expSubtab = 1" class="exponentButton">Upgrades</button>
-          <button @click="tabs.expSubtab = 2" v-if="game.upgrades.includes(2)" class="exponentButton">Autobuyers</button>
+          <button @click="tabs.expSubtab = 0" class="exponentButton">Upgrades</button>
+          <button @click="tabs.expSubtab = 1" v-if="game.upgrades.includes(2)" class="exponentButton">Autobuyers</button>
         </p>
-        <div v-if="tabs.expSubtab == 1">
+        <div v-if="tabs.expSubtab == 0">
           <table>
             <tbody>
               <tr>
@@ -217,7 +217,7 @@
             </tbody>
           </table>
         </div>
-        <div v-if="tabs.expSubtab == 2">
+        <div v-if="tabs.expSubtab == 1">
           <p>
             <button @click="enableAutobuyers()" class="exponentButton">Enable all</button>
             <button @click="disableAutobuyers()" class="exponentButton">Disable all</button>
