@@ -164,7 +164,7 @@
       <div v-if="tabs.tab == 3">
         <h2>You have {{format(game.exponents)}} exponents</h2>
         <p>
-          <button @click="exponentiate()" class="exponentButton prestigeButton">
+          <button @click="exponentiate()" class="exponentButton prestigeButton" :class="game.number.gte(1e12) ? 'canBuy' : 'locked'">
             {{game.number.gte(1e12) ? "Exponentiate for " + format(getExponentGain()) + " exponents" : "Reach 1.000e12 to Exponentiate"}}
           </button>
         </p>
