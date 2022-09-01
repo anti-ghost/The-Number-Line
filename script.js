@@ -138,12 +138,12 @@
         mantissa = 1;
         exponent++;
       }
-      return format(mantissa) + "e" + format(exponent, true);
+      return format(mantissa) + "e" + format(exponent);
     }
     if (number.lt(D.tetrate(10, 6))) {
       return "e" + format(number.log10());
     }
-    return "10^^" + format(number.slog(), true);
+    return "10^^" + format(number.slog());
   }
   
   function formatTime(time, f = 0) {
