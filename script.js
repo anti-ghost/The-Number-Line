@@ -368,13 +368,6 @@
     }
   });
   
-  app.mount("#app");
-  
-  document.getElementById("app").style.display = "";
-  
-  Object.defineProperty(global, "DEBUG", { value: DEBUG });
-  Object.defineProperty(global, "VERSION", { value: VERSION });
-  
   if (DEBUG) {
     global.dev = {
       speed: 1,
@@ -413,7 +406,14 @@
       hardReset,
       app
     };
-  }  
+  }
   
   load();
+  
+  Object.defineProperty(global, "DEBUG", { value: DEBUG });
+  Object.defineProperty(global, "VERSION", { value: VERSION });
+  
+  app.mount("#app");
+  
+  document.getElementById("app").style.display = "";
 })(this);
