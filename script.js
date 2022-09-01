@@ -138,7 +138,7 @@
         mantissa = 1;
         exponent++;
       }
-      return format(mantissa) + "e" + format(exponent);
+      return format(mantissa, 3) + "e" + format(exponent);
     }
     if (number.lt(D.tetrate(10, 6))) {
       return "e" + format(number.log10());
