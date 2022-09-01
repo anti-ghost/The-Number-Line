@@ -322,7 +322,7 @@
   
   function exportSave() {
     copyStringToClipboard(btoa(JSON.stringify(game)));
-    $.notify("Copied to clipboard", "success"");
+    $.notify("Copied to clipboard", "success");
     if (DEBUG) {
       $.notify("Warning! This is a development save. You will not be able to import this save into the main game.", "warn");
     }
