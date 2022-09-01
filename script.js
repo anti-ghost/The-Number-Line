@@ -154,16 +154,16 @@
     }
     if (time.eq(Infinity)) return "forever";
     if (time.lt(60)) return format(time, f) + " seconds";
-    if (time.lt(3600)) return format(time.div(60).floor(), true) + " minutes " +
+    if (time.lt(3600)) return format(time.div(60).floor()) + " minutes " +
       format(time.sub(time.div(60).floor().mul(60)), f) + " seconds";
-    if (time.lt(86400)) return format(time.div(3600).floor(), true) + " hours " +
-      format(time.div(60).floor().sub(time.div(3600).floor().mul(60)), true) + " minutes " +
+    if (time.lt(86400)) return format(time.div(3600).floor()) + " hours " +
+      format(time.div(60).floor().sub(time.div(3600).floor().mul(60))) + " minutes " +
       format(time.sub(time.div(60).floor().mul(60)), f) + " seconds";
-    if (time.lt(31536000)) return format(time.div(86400).floor(), true) + " days " +
-      format(time.div(3600).floor().sub(time.div(86400).floor().mul(24)), true) + " hours " +
-      format(time.div(60).floor().sub(time.div(3600).floor().mul(60)), true) + " minutes";
-    if (time.lt(31536000000)) return format(time.div(31536000).floor(), true) + " years " +
-      format(time.div(86400).floor().sub(time.div(31536000).floor().mul(365)), true) + " days";
+    if (time.lt(31536000)) return format(time.div(86400).floor()) + " days " +
+      format(time.div(3600).floor().sub(time.div(86400).floor().mul(24))) + " hours " +
+      format(time.div(60).floor().sub(time.div(3600).floor().mul(60))) + " minutes";
+    if (time.lt(31536000000)) return format(time.div(31536000).floor()) + " years " +
+      format(time.div(86400).floor().sub(time.div(31536000).floor().mul(365))) + " days";
     return format(time.div(31536000)) + " years";
   }
   
