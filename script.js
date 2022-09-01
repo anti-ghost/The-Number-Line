@@ -7,7 +7,11 @@
 (function(global) {
   "use strict";
   
-  if (btoa(location.origin) != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pbw==") {
+  if (
+    btoa(location.origin) != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pbw==" &&
+    btoa(location.origin) != "aHR0cHM6Ly9yYXcuZ2l0aGFjay5jb20=" &&
+    btoa(location.origin) != "aHR0cHM6Ly9yYXdjZG4uZ2l0aGFjay5jb20="
+  ) {
     document.getElementById("fake").style.display = "";
     return;
   }
