@@ -125,6 +125,10 @@
     return x.div(1e12).root(12).floor();
   }
   
+  function getNextExponent(x = game.number) {
+    return getExponentGain(x).add(1).mul(10).pow(12);
+  }
+  
   function canUpgrade(x) {
     return (x == 1 || game.upgrades.includes(x - 2)) && game.exponents.gte(UPGRADE_COSTS[x - 1]);
   }
@@ -412,6 +416,7 @@
     getCompressCost,
     canCompress,
     getExponentGain,
+    getNextExponent,
     canUpgrade,
     inChal,
     format,
