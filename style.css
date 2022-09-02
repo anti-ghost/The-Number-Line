@@ -23,6 +23,7 @@ button {
   border-style: solid;
   border-radius: 4px;
   cursor: pointer;
+  transition-duration: 0.2s;
 }
 
 .tabButton {
@@ -48,16 +49,16 @@ button {
 }
 
 .locked {
-  color: black;
-  background: white;
-  border-color: black;
+  color: black !important;
+  background: white !important;
+  border-color: black !important;
   cursor: not-allowed;
 }
 
 .bought {
-  color: black;
-  background: lime;
-  border-color: black;
+  color: black !important;
+  background: lime !important;
+  border-color: black !important;
   cursor: default;
 }
 
