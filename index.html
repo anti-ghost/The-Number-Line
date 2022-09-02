@@ -212,8 +212,13 @@
                   </button>
                 </td>
                 <td>
-                  <button class="exponentButton upgradeButton locked">
-                    ???
+                  <button 
+                    @click="upgrade(4)"
+                    class="exponentButton upgradeButton locked"
+                    :class="game.upgrades.includes(4) ? 'bought' : canUpgrade(4) ? 'canBuy' : 'locked'"
+                  >
+                    Unlock Challenges<br /><br />
+                    Need 10 Exponents
                   </button>
                 </td>
               </tr>
@@ -234,6 +239,29 @@
               {{enableDisable(game.autobuyers[x - 1])}}
             </button>
           </p>
+        </div>
+        <div v-if="tabs.expSubtab == 2">
+          <p>
+            <button @click="exitChal()" class="exponentButton">
+              Exit challenge
+            </button>&nbsp;<button @click="game.expOnChal = !game.expOnChal" class="exponentButton">
+              Automatically exponentiate before entering a Challenge: {{onOff(game.expOnChal)}}
+            </button>
+          </p>
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <button @click="enterChal(1)" class="exponentButton challenge" :class="game.chalComp.includes(1) ? 'bought' : inChal(1) ? 'running' : ''">
+                    Challenge 1<br />
+                    Compressor costs start scaling instantly (normally at 1.000e12)<br />
+                    Goal: 1.000e12<br />
+                    Reward: Compressor costs scale 2x slower
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
