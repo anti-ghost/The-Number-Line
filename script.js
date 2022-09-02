@@ -189,9 +189,19 @@
   }
   
   function buyMax(x) {
-    if (game.number.lt(1e12)) {
-      const c = D.affordGeometricSeries(game.number, 10 ** x, 10 ** x, game.compressors[x - 1]),
-      n = D.sumGeometricSeries(c, 10 ** x, 10 ** x, game.compressors[x - 1]);
+    if (!inChal(1) && game.number.lt(1e12 ** (1 + game.challenges.includes(1)))) {
+      const c = D.affordGeometricSeries(
+        game.number,
+        10 ** (x / (1 + game.challenges.includes(1))),
+        10 ** (x / (1 + game.challenges.includes(1))),
+        game.compressors[x - 1]
+      ),
+        n = D.sumGeometricSeries(
+          c,
+          10 ** (x / (1 + game.challenges.includes(1))),
+          10 ** (x / (1 + game.challenges.includes(1))),
+          game.compressors[x - 1]
+        );
       game.compressors[x - 1] = game.compressors[x - 1].add(c);
       game.number = game.number.sub(n);
     } else while (canCompress(x)) compress(x);
