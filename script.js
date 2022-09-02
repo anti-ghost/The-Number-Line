@@ -168,7 +168,7 @@
   }
   
   function compress(x) {
-    if (game.number.gte(getCompressCost(x))) {
+    if (canCompress(x)) {
       game.number = game.number.sub(getCompressCost(x));
       game.compressors[x - 1] = game.compressors[x - 1].add(1);
     }
