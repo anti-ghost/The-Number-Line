@@ -177,6 +177,8 @@
             Upgrades
           </button>&nbsp;<button @click="tabs.expSubtab = 1" v-if="game.upgrades.includes(2)" class="exponentButton">
             Autobuyers
+          </button>&nbsp;<button @click="tabs.expSubtab = 2" v-if="game.upgrades.includes(4)" class="exponentButton">
+            Challenges
           </button>
         </p>
         <div v-if="tabs.expSubtab == 0">
