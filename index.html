@@ -222,10 +222,10 @@
             <button @click="enableAutobuyers()" class="exponentButton">Enable all</button>
             <button @click="disableAutobuyers()" class="exponentButton">Disable all</button>
           </p>
-          <p v-for="x in game.autobuyers">
-            Autobuyer {{x + 1}}: {{onOff(game.autobuyers[x])}}
-            <button @click="game.autobuyers[x] = !game.autobuyers[x]" class="exponentButton">
-              {{enableDisable(game.autobuyers[x])}}
+          <p v-for="x in 10">
+            Autobuyer {{x}}: {{onOff(game.autobuyers[x - 1])}}
+            <button @click="game.autobuyers[x - 1] = !game.autobuyers[x - 1]" class="exponentButton">
+              {{enableDisable(game.autobuyers[x - 1])}}
             </button>
           </p>
         </div>
