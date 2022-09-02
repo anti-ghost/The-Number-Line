@@ -221,7 +221,7 @@
     if (game.number.lt(1e12)) {
       const c = D.affordGeometricSeries(game.number, 10 ** x, 10 ** x, game.compressors[x - 1]),
       n = D.sumGeometricSeries(c, 10 ** x, 10 ** x, game.compressors[x - 1]);
-      game.compressors[x - 1] = game.compressors.add(c);
+      game.compressors[x - 1] = game.compressors[x - 1].add(c);
       game.number = game.number.sub(n);
     } else while (canCompress(x)) compress(x);
   }
