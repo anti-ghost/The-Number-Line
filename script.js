@@ -234,7 +234,7 @@
   
   function upgrade(x) {
     if (canUpgrade(x)) {
-      game.exponents = game.exponents.sub(UPGRADE_COSTS[x - 1]);
+      if (x % 4 > 0) game.exponents = game.exponents.sub(UPGRADE_COSTS[x - 1]);
       game.upgrades.push(x);
     }
   }
