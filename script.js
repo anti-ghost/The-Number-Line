@@ -218,14 +218,12 @@
   }
   
   function buyMax(x) {
-    const c = game.compressors[x - 1]
-      .add(D.affordGeometricSeries(game.number, 10 ** x, 10 ** x, game.compressors[x - 1]))
-      .min(12 / x)
-      .floor(),
-      n = D.sumGeometricSeries(c.sub(game.compressors[x - 1]), 10 ** x, 10 ** x, game.compressors[x - 1]);
-    game.compressors[x - 1] = c;
-    game.number = game.number.sub(n);
-    while (canCompress(x)) compress(x);
+    if (game.number.lt(1e12)) {
+      const c = D.affordGeometricSeries(game.number, 10 ** x, 10 ** x, game.compressors[x - 1]),
+      n = D.sumGeometricSeries(c, 10 ** x, 10 ** x, game.compressors[x - 1]);
+      game.compressors[x - 1] = game.compressors.add(c);
+      game.number = game.number.sub(n);
+    } else while (canCompress(x)) compress(x);
   }
   
   function loop(time) {
