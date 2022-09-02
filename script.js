@@ -1,5 +1,5 @@
 /*
-  The Number Line v1.0.0
+  The Number Line v1.1.0
   Copyright © 2022 resu deteleD
   Licensed under the MIT License
 */
@@ -18,7 +18,7 @@
   
   const DEBUG = btoa(location.href) != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pby9UaGUtTnVtYmVyLUxpbmUv";
   
-  const VERSION = "1.0.0";
+  const VERSION = "1.1.0";
   
   const Vue = global.Vue;
   
@@ -62,10 +62,16 @@
       true,
       true,
       true
-    ]
+    ],
+    challenge: 0,
+    chalComp: [],
+    chalConf: true,
+    expOnChal: true
   };
   
-  const UPGRADE_COSTS = [D(1), D(2), D(3), D(Infinity)];
+  const UPGRADE_COSTS = [D(1), D(2), D(3), D(10)];
+  
+  const CHALLENGE_GOALS = [D(1e12)];
   
   const tabs = Vue.reactive({
     tab: 0,
@@ -104,7 +110,10 @@
   
   function getCompressCost(x) {
     let e = game.compressors[x - 1].add(1).mul(x);
+    if (game.challenges.includes(1)) e = e.div(2);
+    if (inChal(1)) e = e.add(12);
     if (e.gt(12)) e = D.pow10(e.div(12).sub(1)).mul(12).div(D.ln(10)).add(12).sub(D.div(12, D.ln(10)));
+    if (inChal(1)) e = e.sub(12);
     return D.pow10(e);
   }
   
@@ -120,13 +129,17 @@
     return (x == 1 || game.upgrades.includes(x - 2)) && game.exponents.gte(UPGRADE_COSTS[x - 1]);
   }
   
+  function inChal(x) {
+    return game.challenge == x;
+  }
+  
   function format(number, f = 0) {
     number = D(number);
     if (number.isNaN()) {
       NaNalert();
       return "NaN";
     }
-    if (number.sign == -1) return "-" + format(-number);
+    if (number.sign == -1) return "-" + format(number.neg());
     if (number.eq(Infinity)) return "Infinity";
     if (number.sign == 0) return "0";
     if (number.lt(1000)) return number.toNumber().toFixed(f);
@@ -167,6 +180,39 @@
     return format(time.div(31536000)) + " years";
   }
   
+  function onOff(x) {
+    return x ? "ON" : "OFF";
+  }
+  
+  function enableDisable(x) {
+    return x ? "Disable" : "Enable";
+  }
+  
+  function buyMax(x) {
+    if (game.number.lt(1e12)) {
+      const c = D.affordGeometricSeries(game.number, 10 ** x, 10 ** x, game.compressors[x - 1]),
+      n = D.sumGeometricSeries(c, 10 ** x, 10 ** x, game.compressors[x - 1]);
+      game.compressors[x - 1] = game.compressors[x - 1].add(c);
+      game.number = game.number.sub(n);
+    } else while (canCompress(x)) compress(x);
+  }
+  
+  function resetCompressors() {
+    game.number = D(0);
+    game.compressors = [
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0)
+    ];
+  }
+  
   function compress(x) {
     if (canCompress(x)) {
       game.number = game.number.sub(getCompressCost(x));
@@ -175,22 +221,14 @@
   }
   
   function exponentiate() {
-    if (game.number.gte(1e12)) {
+    if (game.challenge > 0) {
+      if (!game.chalComp.includes(game.challenge) && game.number.gte(CHALLENGE_GOALS[game.challenge - 1])) game.chalComp.push(game.challenge);
+      game.challenge = 0;
+      resetCompressors();
+    } else if (game.number.gte(1e12)) {
       game.expUnlocked = true;
       game.exponents = game.exponents.add(getExponentGain());
-      game.number = D(0);
-      game.compressors = [
-        D(0),
-        D(0),
-        D(0),
-        D(0),
-        D(0),
-        D(0),
-        D(0),
-        D(0),
-        D(0),
-        D(0)
-      ];
+      resetCompressors();
     }
   }
   
@@ -201,20 +239,23 @@
     }
   }
   
-  function onOff(x) {
-    return x ? "ON" : "OFF";
-  }
-  
-  function enableDisable(x) {
-    return x ? "Disable" : "Enable";
-  }
-  
   function enableAutobuyers() {
     for (let i = 0; i < 10; i++) game.autobuyers[i] = true;
   }
   
   function disableAutobuyers() {
     for (let i = 0; i < 10; i++) game.autobuyers[i] = false;
+  }
+  
+  function enterChal(x) {
+    if (
+      !game.chalConf ||
+      confirm("Entering a challenge will perform an Exponent reset. You will need to reach a certain number inside the challenge to complete the challenge.")
+    ) {
+      if (game.expOnChal) game.exponents = game.exponents.add(getExponentGain());
+      resetCompressors();
+      game.challenge = x;
+    }
   }
   
   function buyMax(x) {
@@ -338,72 +379,59 @@
   
   const app = Vue.createApp({
     data() {
-      return {
-        $,
-        D,
-        game,
-        tabs,
-        save,
-        importSave,
-        exportSave,
-        hardReset,
-        compress,
-        exponentiate,
-        upgrade,
-        onOff,
-        enableDisable,
-        enableAutobuyers,
-        disableAutobuyers,
-        timePlayed,
-        getNumberRate,
-        getCompressCost,
-        getExponentGain,
-        canCompress,
-        canUpgrade,
-        format,
-        formatTime
-      };
+      return dev;
     }
   });
   
+  const dev = {
+    $,
+    D,
+    VERSION,
+    DEBUG,
+    speed: 1,
+    game,
+    newGame,
+    UPGRADE_COSTS,
+    CHALLENGE_GOALS,
+    tabs,
+    NaNerror,
+    NaNalert,
+    checkNaNs,
+    timePlayed,
+    getNumberRate,
+    getCompressCost,
+    canCompress,
+    getExponentGain,
+    canUpgrade,
+    inChal,
+    format,
+    formatTime,
+    onOff,
+    enableDisable,
+    buyMax,
+    resetCompressors,
+    compress,
+    exponentiate,
+    upgrade,
+    enableAutobuyers,
+    disableAutobuyers,
+    enterChal,
+    loop,
+    simulateTime,
+    reset,
+    loadGame,
+    save,
+    load,
+    copyStringToClipboard,
+    importSave,
+    exportSave,
+    hardReset,
+    app
+  };
+  
   if (DEBUG) {
-    global.dev = {
-      speed: 1,
-      game,
-      newGame,
-      UPGRADE_COSTS,
-      tabs,
-      NaNerror,
-      NaNalert,
-      checkNaNs,
-      timePlayed,
-      getNumberRate,
-      getCompressCost,
-      canCompress,
-      getExponentGain,
-      canUpgrade,
-      format,
-      formatTime,
-      compress,
-      exponentiate,
-      upgrade,
-      onOff,
-      enableDisable,
-      enableAutobuyers,
-      disableAutobuyers,
-      buyMax,
-      loop,
-      simulateTime,
-      reset,
-      loadGame,
-      save,
-      load,
-      copyStringToClipboard,
-      importSave,
-      exportSave,
-      hardReset,
-      app
-    };
+    global.dev = dev;
+    global.app = app;
   }
   
   load();
