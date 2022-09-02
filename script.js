@@ -16,7 +16,7 @@
     return;
   }
   
-  const DEBUG = location.href != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pby9UaGUtTnVtYmVyLUxpbmUv";
+  const DEBUG = btoa(location.href) != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pby9UaGUtTnVtYmVyLUxpbmUv";
   
   const VERSION = "1.0.0";
   
