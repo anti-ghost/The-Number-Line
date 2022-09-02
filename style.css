@@ -67,6 +67,29 @@ button {
   padding: 4px 8px;
 }
 
+.challenge {
+  width: 300px;
+  height: 150px;
+}
+
+.running {
+  color: black !important;
+  background: white !important;
+  border-color: black !important;
+}
+
+.cursorDefault {
+  cursor: default !important;
+}
+
+.cursorPointer {
+  cursor: pointer !important;
+}
+
+.cursorNotAllowed {
+  cursor: not-allowed !important;
+}
+
 .exponentButton {
   background: #E0E0E0;
   border-color: #4980CC;
