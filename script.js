@@ -316,7 +316,6 @@
       const txt = prompt("Copy-paste your save. WARNING: WILL OVERWRITE YOUR SAVE");
       loadGame(JSON.parse(atob(txt)));
       save();
-      location.reload();
     } catch (e) {
       if (DEBUG) console.log(e);
     }
