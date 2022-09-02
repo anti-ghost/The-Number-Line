@@ -16,6 +16,7 @@ where <var>x</var> is the number you had before exponentiating.
 ### Upgrades
 Exponents can be spent on upgrades to boost your production. The first upgrade costs 1 exponent,
 and multiplies your number gain by the total number of compressors you bought.
+You must buy the previous upgrade before buying an upgrade.
 ### Autobuyers
 When you buy the 2<sup>nd</sup> exponent upgrade, you unlock autobuyers. Autobuyers automate buying compressors.
 You may enable or disable each autobuyer individually.
