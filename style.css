@@ -65,3 +65,13 @@ button {
   font-size: 16px;
   padding: 4px 8px;
 }
+
+.exponentButton {
+  background: #E0E0E0;
+  border-color: #4980CC;
+}
+
+.exponentButton:hover {
+  color: white;
+  background: #4980CC;
+}
