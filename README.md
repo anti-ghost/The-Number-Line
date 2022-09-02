@@ -25,7 +25,7 @@ This is a list of changes for The Number Line.
 ## v0.0.0 – Initial Development
 ### v0.1.0 (August 27, 2022)
 * First public release, added compressors
-## v1.0.0 – The Exponent Update
+## v1.0.0 – The Exponent Update (September 1, 2022)
 * Added Exponents
 * Added support for Decimal
 * Major styling changes
