@@ -165,7 +165,11 @@
         <h2>You have {{format(game.exponents)}} exponents</h2>
         <p>
           <button @click="exponentiate()" class="exponentButton prestigeButton" :class="game.number.gte(1e12) ? 'canBuy' : 'locked'">
-            {{game.number.gte(1e12) ? "Exponentiate for " + format(getExponentGain()) + " exponents" : "Reach 1.000e12 to Exponentiate"}}
+            {{
+              game.challenge > 0 ? game.number.gte(CHALLLENGE_GOALS[x - 1]) ? "Complete the challenge!" :
+              "Reach " + format(CHALLENGE_GOALS[x - 1]) + " to complete the challenge. Click here to exit your challenge." :
+              game.number.gte(1e12) ? "Exponentiate for " + format(getExponentGain()) + " exponents" : "Reach 1.000e12 to Exponentiate"
+            }}
           </button>
         </p>
         <p>
@@ -242,9 +246,7 @@
         </div>
         <div v-if="tabs.expSubtab == 2">
           <p>
-            <button @click="exitChal()" class="exponentButton">
-              Exit challenge
-            </button>&nbsp;<button @click="game.expOnChal = !game.expOnChal" class="exponentButton">
+            <button @click="game.expOnChal = !game.expOnChal" class="exponentButton">
               Automatically exponentiate before entering a Challenge: {{onOff(game.expOnChal)}}
             </button>
           </p>
