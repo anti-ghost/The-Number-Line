@@ -1,31 +1,38 @@
 /*
-  The Number Line v0.1.0
+  The Number Line v1.0.0
   Copyright © 2022 resu deteleD
   Licensed under the MIT License
 */
+
+* {
+  margin-right: auto;
+  margin-left: auto;
+}
 
 body {
   font-family: sans-serif;
   color: white;
   background: black;
   margin: 2em;
+  text-align: center;
 }
 
 button {
-  background-color: white;
+  background: white;
   border-color: black;
   border-style: solid;
   border-radius: 4px;
   cursor: pointer;
+  transition-duration: 0.2s;
 }
 
 .tabButton {
   font-size: 20px;
   font-weight: bold;
   height: 40px;
-  margin: 0 4px 0 4px;
-  border-radius: 6px;
-  padding: 0 12px 0 12px;
+  margin: 0 4px;
+  border-radius: 8px;
+  padding: 0 12px;
 }
 
 .optionsButton {
@@ -33,4 +40,39 @@ button {
   height: 150px;
   font-size: 16px;
   border-radius: 8px;
+}
+
+.upgradeButton {
+  width: 200px;
+  height: 100px;
+  border-radius: 8px;
+}
+
+.locked {
+  color: black !important;
+  background: white !important;
+  border-color: black !important;
+  cursor: not-allowed;
+}
+
+.bought {
+  color: black !important;
+  background: lime !important;
+  border-color: black !important;
+  cursor: default;
+}
+
+.prestigeButton {
+  font-size: 16px;
+  padding: 4px 8px;
+}
+
+.exponentButton {
+  background: #E0E0E0;
+  border-color: #4980CC;
+}
+
+.exponentButton:hover {
+  color: white;
+  background: #4980CC;
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <!--
-    The Number Line v0.1.0
+    The Number Line v1.0.0
     Copyright © 2022 resu deteleD
     Licensed under the MIT License 
   -->
@@ -9,11 +9,17 @@
     <meta charset="utf-8" />
     <title>The Number Line</title>
     <link rel="stylesheet" href="style.css" />
-    <link rel="icon" href="/images/ghost.jpg" />
+    <link rel="icon" href="https://anti-ghost.github.io/images/ghost.jpg" />
     <script 
-       src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.js"
-       defer
+      src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.js"
+      defer
     ></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.1.js"
+      defer
+    ></script>
+    <script src="notify.js" defer></script>
+    <script src="decimal.js" defer></script>
     <script src="script.js" defer></script>
   </head>
   <body>
@@ -21,97 +27,114 @@
       <h1>Number: {{format(game.number)}}</h1>
       <p>Your number is increasing by {{format(getNumberRate())}} per second</p>
       <p>
-        <button @click="tab = 0" class="tabButton">
+        <button @click="tabs.tab = 0" class="tabButton">
           Compressors
         </button>
-        <button @click="tab = 1" class="tabButton">
+        <button @click="tabs.tab = 1" class="tabButton">
           Options
         </button>
-        <button @click="tab = 2" class="tabButton">
+        <button @click="tabs.tab = 2" class="tabButton">
           Statistics
         </button>
+        <button @click="tabs.tab = 3" v-if="game.expUnlocked || game.number.gte(1e12)" class="tabButton exponentButton">
+          Exponents
+        </button>
       </p>
-      <div v-if="tab == 0">
+      <div v-if="tabs.tab == 0">
         <table>
           <tbody>
             <tr>
               <td>
-                <button @click="compress(1)" class="compressButton">
+                <button @click="compress(1)" class="upgradeButton" :class="canCompress(1) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(1), true)}}
+                  Cost: {{format(getCompressCost(1))}}<br />
+                  Amount: {{format(game.compressors[0])}}
                 </button>
               </td>
               <td>
-                <button @click="compress(2)" class="compressButton">
+                <button @click="compress(2)" class="upgradeButton" :class="canCompress(2) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(2), true)}}
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button @click="compress(3)" class="compressButton">
-                  Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(3), true)}}
-                </button>
-              </td>
-              <td>
-                <button @click="compress(4)" class="compressButton">
-                  Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(4), true)}}
+                  Cost: {{format(getCompressCost(2))}}<br />
+                  Amount: {{format(game.compressors[1])}}
                 </button>
               </td>
             </tr>
             <tr>
               <td>
-                <button @click="compress(5)" class="compressButton">
+                <button @click="compress(3)" class="upgradeButton" :class="canCompress(3) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(5), true)}}
+                  Cost: {{format(getCompressCost(3))}}<br />
+                  Amount: {{format(game.compressors[2])}}
                 </button>
               </td>
               <td>
-                <button @click="compress(6)" class="compressButton">
+                <button @click="compress(4)" class="upgradeButton" :class="canCompress(4) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(6), true)}}
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button @click="compress(7)" class="compressButton">
-                  Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(7), true)}}
-                </button>
-              </td>
-              <td>
-                <button @click="compress(8)" class="compressButton">
-                  Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(8), true)}}
+                  Cost: {{format(getCompressCost(4))}}<br />
+                  Amount: {{format(game.compressors[3])}}
                 </button>
               </td>
             </tr>
             <tr>
               <td>
-                <button @click="compress(9)" class="compressButton">
+                <button @click="compress(5)" class="upgradeButton" :class="canCompress(5) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(9), true)}}
+                  Cost: {{format(getCompressCost(5))}}<br />
+                  Amount: {{format(game.compressors[4])}}
                 </button>
               </td>
               <td>
-                <button @click="compress(10)" class="compressButton">
+                <button @click="compress(6)" class="upgradeButton" :class="canCompress(6) ? 'canBuy' : 'locked'">
                   Compress the number line by 2x<br />
-                  Cost: {{format(getCompressCost(10), true)}}
+                  Cost: {{format(getCompressCost(6))}}<br />
+                  Amount: {{format(game.compressors[5])}}
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button @click="compress(7)" class="upgradeButton" :class="canCompress(7) ? 'canBuy' : 'locked'">
+                  Compress the number line by 2x<br />
+                  Cost: {{format(getCompressCost(7))}}<br />
+                  Amount: {{format(game.compressors[6])}}
+                </button>
+              </td>
+              <td>
+                <button @click="compress(8)" class="upgradeButton" :class="canCompress(8) ? 'canBuy' : 'locked'">
+                  Compress the number line by 2x<br />
+                  Cost: {{format(getCompressCost(8))}}<br />
+                  Amount: {{format(game.compressors[7])}}
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button @click="compress(9)" class="upgradeButton" :class="canCompress(9) ? 'canBuy' : 'locked'">
+                  Compress the number line by 2x<br />
+                  Cost: {{format(getCompressCost(9))}}<br />
+                  Amount: {{format(game.compressors[8])}}
+                </button>
+              </td>
+              <td>
+                <button @click="compress(10)" class="upgradeButton" :class="canCompress(10) ? 'canBuy' : 'locked'">
+                  Compress the number line by 2x<br />
+                  Cost: {{format(getCompressCost(10))}}<br />
+                  Amount: {{format(game.compressors[9])}}
                 </button>
               </td>
             </tr>
           </tbody>
         </table>
+        <p v-if="game.expUnlocked">
+          <strong>WARNING:</strong> Compressor costs scale faster beyond 1.000e12:
+          10<sup><var>x</var></sup> → 10<sup>10<sup><var>x</var>/12-1</sup>*(12/ln(10))+12-12/ln(10)</sup>
+        </p>
       </div>
-      <div v-if="tab == 1">
+      <div v-if="tabs.tab == 1">
         <table>
           <tbody>
             <tr>
-              <td><button @click="save()" class="optionsButton">Save your game</button></td>
+              <td><button @click="save(true)" class="optionsButton">Save your game</button></td>
               <td><button @click="importSave()" class="optionsButton">Import your save</button></td>
             </tr>
             <tr>
@@ -121,18 +144,97 @@
           </tbody>
         </table>
         <p>
+          <a href="howtoplay.html">How to play</a> |
+          <a href="changelog.html">Changelog</a>
+        </p>
+        <p>
           <small>
             <i>
-              The Number Line v0.1.0<br />
+              The Number Line v1.0.0<br />
               © 2022 <a href="https://github.com/anti-ghost">resu deteleD</a><br />
               This work is licensed under the <a href="https://opensource.org/licenses/MIT">MIT License</a>
             </i>
           </small>
         </p>
       </div>
-      <div v-if="tab == 2">
+      <div v-if="tabs.tab == 2">
         <p>You have played for {{formatTime(timePlayed() / 1000)}}.</p>
         <p>Your highest number was {{format(game.highestNumber)}}.</p>
+      </div>
+      <div v-if="tabs.tab == 3">
+        <h2>You have {{format(game.exponents)}} exponents</h2>
+        <p>
+          <button @click="exponentiate()" class="exponentButton prestigeButton" :class="game.number.gte(1e12) ? 'canBuy' : 'locked'">
+            {{game.number.gte(1e12) ? "Exponentiate for " + format(getExponentGain()) + " exponents" : "Reach 1.000e12 to Exponentiate"}}
+          </button>
+        </p>
+        <p>
+          <button @click="tabs.expSubtab = 0" class="exponentButton">
+            Upgrades
+          </button>&nbsp;<button @click="tabs.expSubtab = 1" v-if="game.upgrades.includes(2)" class="exponentButton">
+            Autobuyers
+          </button>
+        </p>
+        <div v-if="tabs.expSubtab == 0">
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <button 
+                    @click="upgrade(1)"
+                    class="exponentButton upgradeButton" 
+                    :class="game.upgrades.includes(1) ? 'bought' : canUpgrade(1) ? 'canBuy' : 'locked'"
+                  >
+                    Number gain is boosted by the total number of Compressors<br />
+                    Currently: x{{format(game.compressors.reduce((x, y) => x.add(y)).add(1))}}<br />
+                    Cost: 1 Exponent
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(2)"
+                    class="exponentButton upgradeButton" 
+                    :class="game.upgrades.includes(2) ? 'bought' : canUpgrade(2) ? 'canBuy' : 'locked'"
+                  >
+                    Unlock autobuyers for Compressors<br />
+                    Cost: 2 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(3)"
+                    class="exponentButton upgradeButton" 
+                    :class="game.upgrades.includes(3) ? 'bought' : canUpgrade(3) ? 'canBuy' : 'locked'"
+                  >
+                    Number gain is boosted by Exponents<br />
+                    Currently: x{{format(game.exponents.add(1).sqrt(), 3)}}<br />
+                    Cost: 3 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button class="exponentButton upgradeButton locked">
+                    ???
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div v-if="tabs.expSubtab == 1">
+          <p>
+            <button @click="enableAutobuyers()" class="exponentButton">
+              Enable all
+            </button>&nbsp;<button @click="disableAutobuyers()" class="exponentButton">
+              Disable all
+            </button>
+          </p>
+          <p v-for="x in 10">
+            Autobuyer {{x}}: {{onOff(game.autobuyers[x - 1])}}
+            <button @click="game.autobuyers[x - 1] = !game.autobuyers[x - 1]" class="exponentButton">
+              {{enableDisable(game.autobuyers[x - 1])}}
+            </button>
+          </p>
+        </div>
       </div>
     </div>
     <div id="fake" style="display: none;">

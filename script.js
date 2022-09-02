@@ -1,5 +1,5 @@
 /*
-  The Number Line v0.1.0
+  The Number Line v1.0.0
   Copyright © 2022 resu deteleD
   Licensed under the MIT License
 */
@@ -7,43 +7,79 @@
 (function(global) {
   "use strict";
   
-  if (btoa(location.href) != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pby9UaGUtTnVtYmVyLUxpbmUv") {
+  if (
+    btoa(location.origin) != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pbw==" &&
+    btoa(location.origin) != "aHR0cHM6Ly9yYXcuZ2l0aGFjay5jb20=" &&
+    btoa(location.origin) != "aHR0cHM6Ly9yYXdjZG4uZ2l0aGFjay5jb20="
+  ) {
     document.getElementById("fake").style.display = "";
     return;
   }
   
+  const DEBUG = location.href != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pby9UaGUtTnVtYmVyLUxpbmUv";
+  
+  const VERSION = "1.0.0";
+  
   const Vue = global.Vue;
   
-  let NaNerror = false;
+  const $ = global.$;
+  
+  const D = global.Decimal;
   
   const game = Vue.reactive({});  
   
   const newGame = {
-    version: "0.1.0",
+    debug: DEBUG,
+    version: VERSION,
     timeStarted: Date.now(),
     lastTick: Date.now(),
     offlineProg: true,
-    highestNumber: 0,
-    number: 0,
+    number: D(0),
+    highestNumber: D(0),
     compressors: [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0)
+    ],
+    expUnlocked: false,
+    exponents: D(0),
+    upgrades: [],
+    autobuyers: [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
     ]
   };
   
+  const UPGRADE_COSTS = [D(1), D(2), D(3), D(Infinity)];
+  
+  const tabs = Vue.reactive({
+    tab: 0,
+    expSubtab: 0
+  });
+  
+  let NaNerror = false;
+  
   function NaNalert() {
     NaNerror = true;
-    prompt(
-      "We have detected a NaN in your save! Please export it to your clipboard (although it might be broken) and report it to the developers of The Number Line.",
-      btoa(JSON.stringify(game))
+    copyStringToClipboard(btoa(JSON.stringify(game)));
+    alert(
+      "We have detected a NaN in your save! We have exported it to your clipboard (although it might be broken). " +
+      "Please report this save to the developers of The Number Line, so they can look into it."
     );
   }
   
@@ -60,54 +96,162 @@
   }
   
   function getNumberRate(t = 1) {
-    return 2 ** game.compressors.reduce((x, y) => x + y) * t;
+    let rate = D.pow(2, game.compressors.reduce((x, y) => x.add(y)));
+    if (game.upgrades.includes(1)) rate = rate.mul(game.compressors.reduce((x, y) => x.add(y)).add(1));
+    if (game.upgrades.includes(3)) rate = rate.mul(game.exponents.add(1).sqrt());
+    return rate.mul(t);
   }
   
   function getCompressCost(x) {
-    return 10 ** (x * (game.compressors[x - 1] + 1));
+    let e = game.compressors[x - 1].add(1).mul(x);
+    if (e.gt(12)) e = D.pow10(e.div(12).sub(1)).mul(12).div(D.ln(10)).add(12).sub(D.div(12, D.ln(10)));
+    return D.pow10(e);
   }
   
-  function format(number, int = false) {
-    if (isNaN(number)) {
+  function canCompress(x) {
+    return game.number.gte(getCompressCost(x));
+  }
+  
+  function getExponentGain(x = game.number) {
+    return x.div(1e12).root(12).floor();
+  }
+  
+  function canUpgrade(x) {
+    return (x == 1 || game.upgrades.includes(x - 2)) && game.exponents.gte(UPGRADE_COSTS[x - 1]);
+  }
+  
+  function format(number, f = 0) {
+    number = D(number);
+    if (number.isNaN()) {
       NaNalert();
       return "NaN";
     }
-    if (number < 0) return "-" + format(-number);
-    if (number == Infinity) return "Infinity";
-    if (int && number < 999999.5) return number.toFixed(0);
-    if (number <= 9.9995) number.toFixed(3);
-    if (number < 1000) return number.toPrecision(4);
-    if (number < 999999.5) return number.toFixed(0);
-    let exponent = Math.floor(Math.log10(number));
-    let mantissa = number / 10 ** exponent;
-    if (format(mantissa) === "10.00") {
-      mantissa = 1;
-      exponent++;
+    if (number.sign == -1) return "-" + format(-number);
+    if (number.eq(Infinity)) return "Infinity";
+    if (number.sign == 0) return "0";
+    if (number.lt(1000)) return number.toNumber().toFixed(f);
+    if (number.lt(1e6)) return number.toNumber().toFixed(0);
+    if (number.lt("e1e6")) {
+      let exponent = number.e;
+      let mantissa = number.m;
+      if (format(mantissa, 3) === "10.000") {
+        mantissa = 1;
+        exponent++;
+      }
+      return format(mantissa, 3) + "e" + format(exponent);
     }
-    return format(mantissa) + "e" + exponent.toFixed(0);
+    if (number.lt(D.tetrate(10, 6))) {
+      return "e" + format(number.log10());
+    }
+    return "10^^" + format(number.slog());
   }
   
-  function formatTime(time, int = false) {
-    if (time == Infinity) return "forever";
-    if (time < 60) return format(time, int) + " seconds";
-    if (time < 3600) return format(Math.floor(time / 60), true) + " minutes " +
-      format(time % 60, int) + " seconds";
-    if (time < 86400) return format(Math.floor(time / 3600), true) + " hours " +
-      format(Math.floor(time / 60) % 60, true) + " minutes " +
-      format(time % 60, int) + " seconds";
-    if (time < 31536000) return format(Math.floor(time / 86400), true) + " days " +
-      format(Math.floor(time / 3600) % 24, true) + " hours " +
-      format(Math.floor(time / 60) % 60, true) + " minutes";
-    if (time < 31536000000) return format(Math.floor(time / 31536000), true) + " years " +
-      format(Math.floor(time / 86400) % 365, true) + " days";
-    return format(time / 31536000) + " years";
+  function formatTime(time, f = 0) {
+    time = D(time);
+    if (time.isNaN()) {
+      NaNalert();
+      return "NaN seconds";
+    }
+    if (time.eq(Infinity)) return "forever";
+    if (time.lt(60)) return format(time, f) + " seconds";
+    if (time.lt(3600)) return format(time.div(60).floor()) + " minutes " +
+      format(time.sub(time.div(60).floor().mul(60)), f) + " seconds";
+    if (time.lt(86400)) return format(time.div(3600).floor()) + " hours " +
+      format(time.div(60).floor().sub(time.div(3600).floor().mul(60))) + " minutes " +
+      format(time.sub(time.div(60).floor().mul(60)), f) + " seconds";
+    if (time.lt(31536000)) return format(time.div(86400).floor()) + " days " +
+      format(time.div(3600).floor().sub(time.div(86400).floor().mul(24))) + " hours " +
+      format(time.div(60).floor().sub(time.div(3600).floor().mul(60))) + " minutes";
+    if (time.lt(31536000000)) return format(time.div(31536000).floor()) + " years " +
+      format(time.div(86400).floor().sub(time.div(31536000).floor().mul(365))) + " days";
+    return format(time.div(31536000)) + " years";
   }
   
   function compress(x) {
-    if (game.number >= getCompressCost(x)) {
-      game.number -= getCompressCost(x);
-      game.compressors[x - 1]++;
+    if (canCompress(x)) {
+      game.number = game.number.sub(getCompressCost(x));
+      game.compressors[x - 1] = game.compressors[x - 1].add(1);
     }
+  }
+  
+  function exponentiate() {
+    if (game.number.gte(1e12)) {
+      game.expUnlocked = true;
+      game.exponents = game.exponents.add(getExponentGain());
+      game.number = D(0);
+      game.compressors = [
+        D(0),
+        D(0),
+        D(0),
+        D(0),
+        D(0),
+        D(0),
+        D(0),
+        D(0),
+        D(0),
+        D(0)
+      ];
+    }
+  }
+  
+  function upgrade(x) {
+    if (canUpgrade(x)) {
+      game.exponents = game.exponents.sub(UPGRADE_COSTS[x - 1]);
+      game.upgrades.push(x);
+    }
+  }
+  
+  function onOff(x) {
+    return x ? "ON" : "OFF";
+  }
+  
+  function enableDisable(x) {
+    return x ? "Disable" : "Enable";
+  }
+  
+  function enableAutobuyers() {
+    for (let i = 0; i < 10; i++) game.autobuyers[i] = true;
+  }
+  
+  function disableAutobuyers() {
+    for (let i = 0; i < 10; i++) game.autobuyers[i] = false;
+  }
+  
+  function buyMax(x) {
+    if (game.number.lt(1e12)) {
+      const c = D.affordGeometricSeries(game.number, 10 ** x, 10 ** x, game.compressors[x - 1]),
+      n = D.sumGeometricSeries(c, 10 ** x, 10 ** x, game.compressors[x - 1]);
+      game.compressors[x - 1] = game.compressors[x - 1].add(c);
+      game.number = game.number.sub(n);
+    } else while (canCompress(x)) compress(x);
+  }
+  
+  function loop(time) {
+    if (!NaNerror && checkNaNs()) NaNalert();
+    if (NaNerror) return;
+    game.number = game.number.add(getNumberRate(time));
+    if (game.number.gt(game.highestNumber)) game.highestNumber = game.number;
+    if (game.upgrades.includes(2)) {
+      for (let i = 0; i < 10; i++) {
+        if (game.autobuyers[i]) buyMax(i + 1);
+      }
+    }
+  }
+  
+  function simulateTime(ms) {
+    if (NaNerror) return;
+    game.lastTick = Date.now();
+    if (DEBUG) ms *= dev.speed;
+    for (let i = 0; i < 10; i++) {
+      loop(ms / 10000);
+    }
+  }
+  
+  function transformSaveToDecimal() {
+    game.number = D(game.number);
+    game.highestNumber = D(game.highestNumber);
+    for (let i = 0; i < 10; i++) game.compressors[i] = D(game.compressors[i]);
+    game.exponents = D(game.exponents);
   }
   
   function reset(obj = newGame) {
@@ -116,30 +260,17 @@
     }
   }
   
-  function loop(time) {
-    if (!NaNerror && checkNaNs()) NaNalert();
-    if (NaNerror) return;
-    game.number += getNumberRate(time);
-    game.highestNumber = Math.max(game.number, game.highestNumber);
-  }
-  
-  function simulateTime(ms) {
-    if (NaNerror) return;
-    game.lastTick = Date.now();
-    for (let i = 0; i < 10; i++) {
-      loop(ms / 10000);
-    }
-  }
-  
-  function save() {
-    if (NaNerror) return;
-    localStorage.setItem("TheNumberLineSave", btoa(JSON.stringify(game)));
-  }
-  
   function loadGame(loadgame) {
+    if (loadgame.debug && !DEBUG) {
+      $.notify("Import failed, attempted to load development save into the main game.", "error");
+      return;
+    }
     for (const i in loadgame) {
       game[i] = loadgame[i];
     }
+    game.debug = DEBUG;
+    game.version = VERSION;
+    transformSaveToDecimal();
     const diff = Date.now() - game.lastTick;
     console.log(diff);
     if (game.offlineProg) {
@@ -147,13 +278,37 @@
     }
   }
   
+  function save(auto = false) {
+    if (NaNerror) {
+      if (auto) $.notify("Save failed, attempted to save a broken game", "error");
+      return;
+    }
+    localStorage.setItem(
+      DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave",
+      btoa(JSON.stringify(game))
+    );
+    if (auto) $.notify("Game saved", "success");
+  }
+  
   function load() {
     reset();
-    if (localStorage.getItem("TheNumberLineSave") !== null) {
-      loadGame(JSON.parse(atob(localStorage.getItem("TheNumberLineSave"))));
+    if (localStorage.getItem(DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave") !== null) {
+      loadGame(JSON.parse(atob(localStorage.getItem(DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave"))));
     }
     setInterval(() => simulateTime(Date.now() - game.lastTick), 0);
     setInterval(() => save(), 5000);
+  }
+  
+  function copyStringToClipboard(str) {
+    const el = document.createElement("textarea");
+    el.value = str;
+    el.setAttribute("readonly", "");
+    el.style.position = "absolute";
+    el.style.left = "-9999px";
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
   }
   
   function importSave() {
@@ -163,41 +318,101 @@
       save();
       location.reload();
     } catch (e) {
-      console.log(e);
+      if (DEBUG) console.log(e);
     }
   }
   
   function exportSave() {
-    prompt("Copy-paste the following save:", btoa(JSON.stringify(game)));
+    copyStringToClipboard(btoa(JSON.stringify(game)));
+    $.notify("Copied to clipboard", "success");
+    if (DEBUG) {
+      $.notify("Warning! This is a development save. You will not be able to import this save into the main game.", "warn");
+    }
   }
   
   function hardReset() {
     if (prompt('Are you sure you want to reset your game? This cannot be undone! Type "reset" without quotation marks to reset your game.') === "reset") {
-      localStorage.removeItem("TheNumberLineSave");
+      localStorage.removeItem(DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave");
       location.reload();
     }
   }
   
-  load();
-  
-  Vue.createApp({
+  const app = Vue.createApp({
     data() {
       return {
+        $,
+        D,
         game,
-        tab: 0,
+        tabs,
         save,
         importSave,
         exportSave,
         hardReset,
         compress,
+        exponentiate,
+        upgrade,
+        onOff,
+        enableDisable,
+        enableAutobuyers,
+        disableAutobuyers,
         timePlayed,
         getNumberRate,
         getCompressCost,
+        getExponentGain,
+        canCompress,
+        canUpgrade,
         format,
         formatTime
       };
     }
-  }).mount("#app");
+  });
+  
+  if (DEBUG) {
+    global.dev = {
+      speed: 1,
+      game,
+      newGame,
+      UPGRADE_COSTS,
+      tabs,
+      NaNerror,
+      NaNalert,
+      checkNaNs,
+      timePlayed,
+      getNumberRate,
+      getCompressCost,
+      canCompress,
+      getExponentGain,
+      canUpgrade,
+      format,
+      formatTime,
+      compress,
+      exponentiate,
+      upgrade,
+      onOff,
+      enableDisable,
+      enableAutobuyers,
+      disableAutobuyers,
+      buyMax,
+      loop,
+      simulateTime,
+      reset,
+      loadGame,
+      save,
+      load,
+      copyStringToClipboard,
+      importSave,
+      exportSave,
+      hardReset,
+      app
+    };
+  }
+  
+  load();
+  
+  Object.defineProperty(global, "DEBUG", { value: DEBUG });
+  Object.defineProperty(global, "VERSION", { value: VERSION });
+  
+  app.mount("#app");
   
   document.getElementById("app").style.display = "";
 })(this);

@@ -1,12 +1,33 @@
-# The Number Line
-A game of making larger and larger numbers
-## Changelog
-This is a list of updates for The Number Line.
-### v0.1.0
-First version, added compressors.
-
-**Endgame:** 1.000e12
-## How to Play
-You start the game with a text saying "Number: *x*". *x* is known as your **number**. Your number is the main currency in the game. Your number increases by 1 per second.
+# How to Play
+The Number Line is an idle incremental game with multiple layers of prestige, unlocks, and features.
+The basic goal is to reach as large of a number as you can, which can be spent on upgrades to boost your overall production.
+## Number
+When you start the game, your number starts at 0 and increases by 1 per second.
+When your number reaches 10, you can spend it to buy a compressor.
 ### Compressors
-When your number reaches 10, you can spend it to buy a **compressor**. Each compressor you buy doubles your Number gain. There exist 10 compressors with varying costs. It costs 10<sup>*x* * *y*</sup> to buy the *x*-th compressor *y* times.
+Compressors multiply the rate your number increases. Each compressor you buy doubles the rate.
+There exist 10 compressors with varying costs.
+The cost to buy the <var>x</var><sup>th</sup> compressor is 10<sup><var>x</var> * (<var>y</var>+1)</sup>,
+where <var>y</var> is the current number of <var>x</var><sup>th</sup> compressors you have.
+## Exponents
+When your number reaches 1 trillion, you unlock exponentiation. When you exponentiate, you reset all previous progress,
+but you gain exponents based on your number. The exponent gain is <var>x</var><sup>1/12</sup>/10,
+where <var>x</var> is the number you had before exponentiating.
+### Upgrades
+Exponents can be spent on upgrades to boost your production. The first upgrade costs 1 exponent,
+and multiplies your number gain by the total number of compressors you bought.
+You must buy the previous upgrade before buying an upgrade.
+### Autobuyers
+When you buy the 2<sup>nd</sup> exponent upgrade, you unlock autobuyers. Autobuyers automate buying compressors.
+You may enable or disable each autobuyer individually.
+# Changelog
+This is a list of changes for The Number Line.
+## v0.0.0 – Initial Development
+### v0.1.0 (August 27, 2022)
+* First public release, added compressors
+## v1.0.0 – The Exponent Update (September 1, 2022)
+* Added Exponents
+* Added support for Decimal
+* Major styling changes
+* Added How to Play page
+* Added changelog
