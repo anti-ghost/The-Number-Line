@@ -252,7 +252,9 @@
         </div>
         <div v-if="tabs.expSubtab == 2">
           <p>
-            <button @click="game.expOnChal = !game.expOnChal" class="exponentButton">
+            <button @click="game.chalConf = !game.chalConf" class="exponentButton">
+              Challenge confirmation: {{onOff(game.chalConf)}}
+            </button>&nbsp;<button @click="game.expOnChal = !game.expOnChal" class="exponentButton">
               Automatically exponentiate before entering a Challenge: {{onOff(game.expOnChal)}}
             </button>
           </p>
