@@ -70,6 +70,7 @@ button {
 .challenge {
   width: 300px;
   height: 150px;
+  border-radius: 8px;
 }
 
 .running {
