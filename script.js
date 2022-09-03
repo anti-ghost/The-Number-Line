@@ -71,7 +71,7 @@
   
   const UPGRADE_COSTS = [D(1), D(2), D(3), D(10), D(20), D(50)];
   
-  const CHALLENGE_GOALS = [D(1e12)];
+  const CHALLENGE_GOALS = [D(1e12), D(1e100)];
   
   const tabs = Vue.reactive({
     tab: 0,
@@ -103,7 +103,7 @@
   
   function getNumberRate(t = 1) {
     let rate = D.pow(getCompressorBase(), game.compressors.reduce((x, y) => x.add(y)));
-    if (game.upgrades.includes(1)) rate = rate.mul(game.compressors.reduce((x, y) => x.add(y)).add(1));
+    if (!inChal(2) && game.upgrades.includes(1)) rate = rate.mul(game.compressors.reduce((x, y) => x.add(y)).add(1));
     if (game.upgrades.includes(3)) rate = rate.mul(game.exponents.add(1).sqrt());
     if (game.upgrades.includes(6)) rate = rate.mul(game.number.add(10).log10());
     return rate.mul(t);
@@ -111,7 +111,7 @@
   
   function getCompressorBase() {
     let x = inChal(1) ? D(4): D(2);
-    if (game.upgrades.includes(5)) x = x.mul(1.1);
+    if (!inChal(2) && game.upgrades.includes(5)) x = x.mul(1.1);
     return x;
   }
   
@@ -129,11 +129,11 @@
   }
   
   function getExponentGain(x = game.number) {
-    return x.div(1e12).root(12).floor();
+    return x.div(1e12).root(12 - 2 * game.chalComp.includes(2)).floor();
   }
   
   function getNextExponent(x = game.number) {
-    return getExponentGain(x).add(1).mul(10).pow(12);
+    return getExponentGain(x).add(1).mul(10).pow(12 - 2 * game.chalComp.includes(2));
   }
   
   function canUpgrade(x) {
