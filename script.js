@@ -71,7 +71,7 @@
   
   const UPGRADE_COSTS = [D(1), D(2), D(3), D(10), D(20), D(50)];
   
-  const CHALLENGE_GOALS = [D(1e12), D(1e100)];
+  const CHALLENGE_GOALS = [D(1e12), D(1e20)];
   
   const tabs = Vue.reactive({
     tab: 0,
