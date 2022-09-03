@@ -69,7 +69,7 @@
     expOnChal: true
   };
   
-  const UPGRADE_COSTS = [D(1), D(2), D(3), D(10), D(20)];
+  const UPGRADE_COSTS = [D(1), D(2), D(3), D(10), D(20), D(50)];
   
   const CHALLENGE_GOALS = [D(1e12)];
   
@@ -105,6 +105,7 @@
     let rate = D.pow(getCompressorBase(), game.compressors.reduce((x, y) => x.add(y)));
     if (game.upgrades.includes(1)) rate = rate.mul(game.compressors.reduce((x, y) => x.add(y)).add(1));
     if (game.upgrades.includes(3)) rate = rate.mul(game.exponents.add(1).sqrt());
+    if (game.upgrades.includes(6)) rate = rate.mul(game.number.add(10).log10());
     return rate.mul(t);
   }
   
