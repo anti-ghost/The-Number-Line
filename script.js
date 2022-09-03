@@ -69,7 +69,7 @@
     expOnChal: true
   };
   
-  const UPGRADE_COSTS = [D(1), D(2), D(3), D(10)];
+  const UPGRADE_COSTS = [D(1), D(2), D(3), D(10), D(20)];
   
   const CHALLENGE_GOALS = [D(1e12)];
   
@@ -109,7 +109,9 @@
   }
   
   function getCompressorBase() {
-    return inChal(1) ? D(4): D(2);
+    let x = inChal(1) ? D(4): D(2);
+    if (game.upgrades.includes(5)) x = x.mul(1.1);
+    return x;
   }
   
   function getCompressCost(x) {
