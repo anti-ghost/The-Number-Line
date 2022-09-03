@@ -114,7 +114,7 @@
   
   function getCompressCost(x) {
     let e = game.compressors[x - 1].add(1).mul(x);
-    if (game.chalComp.includes(1)) e = e.div(2);
+    if (game.chalComp.includes(1)) e = e.mul(0.9);
     if (inChal(1)) e = e.add(12);
     if (e.gt(12)) e = D.pow10(e.div(12).sub(1)).mul(12).div(D.ln(10)).add(12).sub(D.div(12, D.ln(10)));
     if (inChal(1)) e = e.sub(12);
