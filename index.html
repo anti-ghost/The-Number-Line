@@ -255,6 +255,23 @@
                     Cost: 50 Exponents
                   </button>
                 </td>
+                <td>
+                  <button 
+                    @click="upgrade(7)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(7) ? 'bought' : canUpgrade(7) ? '' : 'locked'"
+                  >
+                    Number gain is boosted by total time played<br />
+                    Currently: x{{format(D.pow(timePlayed() / 1000, 0.2), 3)}}<br />
+                    Cost: 500 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button class="exponentButton upgradeButton locked">
+                    ???<br /><br />
+                    ???
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
