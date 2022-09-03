@@ -197,17 +197,17 @@
   }
   
   function buyMax(x) {
-    if (!inChal(1) && game.number.lt(1e12 ** (1 + game.chalComp.includes(1)))) {
+    if (!inChal(1) && game.number.lt(1e12 ** (1 + game.chalComp.includes(1) / 9))) {
       const c = D.affordGeometricSeries(
         game.number,
-        10 ** (x / (1 + game.chalComp.includes(1))),
-        10 ** (x / (1 + game.chalComp.includes(1))),
+        10 ** (x / (1 + game.chalComp.includes(1) / 9)),
+        10 ** (x / (1 + game.chalComp.includes(1) / 9)),
         game.compressors[x - 1]
       ),
         n = D.sumGeometricSeries(
           c,
-          10 ** (x / (1 + game.chalComp.includes(1))),
-          10 ** (x / (1 + game.chalComp.includes(1))),
+          10 ** (x / (1 + game.chalComp.includes(1) / 9)),
+          10 ** (x / (1 + game.chalComp.includes(1) / 9)),
           game.compressors[x - 1]
         );
       game.compressors[x - 1] = game.compressors[x - 1].add(c);
