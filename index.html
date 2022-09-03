@@ -233,6 +233,18 @@
                   </button>
                 </td>
               </tr>
+              <tr>
+                <td>
+                  <button 
+                    @click="upgrade(5)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(5) ? 'bought' : canUpgrade(5) ? '' : 'locked'"
+                  >
+                    Compressors are 10% more powerful<br /><br />
+                    Cost: 20 Exponents
+                  </button>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
