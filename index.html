@@ -193,7 +193,7 @@
                 <td>
                   <button 
                     @click="upgrade(1)"
-                    class="exponentButton upgradeButton" 
+                    class="exponentButton upgradeButton"
                     :class="game.upgrades.includes(1) ? 'bought' : canUpgrade(1) ? '' : 'locked'"
                   >
                     Number gain is boosted by the total number of Compressors<br />
@@ -204,7 +204,7 @@
                 <td>
                   <button 
                     @click="upgrade(2)"
-                    class="exponentButton upgradeButton" 
+                    class="exponentButton upgradeButton"
                     :class="game.upgrades.includes(2) ? 'bought' : canUpgrade(2) ? '' : 'locked'"
                   >
                     Unlock autobuyers for Compressors<br />
@@ -214,7 +214,7 @@
                 <td>
                   <button 
                     @click="upgrade(3)"
-                    class="exponentButton upgradeButton" 
+                    class="exponentButton upgradeButton"
                     :class="game.upgrades.includes(3) ? 'bought' : canUpgrade(3) ? '' : 'locked'"
                   >
                     Number gain is boosted by Exponents<br />
@@ -225,7 +225,7 @@
                 <td>
                   <button 
                     @click="upgrade(4)"
-                    class="exponentButton upgradeButton locked"
+                    class="exponentButton upgradeButton"
                     :class="game.upgrades.includes(4) ? 'bought' : canUpgrade(4) ? '' : 'locked'"
                   >
                     Unlock Challenges<br /><br />
