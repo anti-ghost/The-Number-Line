@@ -320,6 +320,7 @@
       $.notify("Import failed, attempted to load development save into the main game.", "error");
       return;
     }
+    reset();
     for (const i in loadgame) {
       game[i] = loadgame[i];
     }
