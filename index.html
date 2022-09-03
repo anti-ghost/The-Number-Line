@@ -170,7 +170,7 @@
             :class="game.challenge > 0 || game.number.gte(1e12) ? '' : 'locked'"
           >
             {{
-              game.challenge > 0 ? game.number.gte(CHALLENGE_GOALS[x - 1]) ? "Complete the challenge!" :
+              game.challenge > 0 ? game.number.gte(CHALLENGE_GOALS[game.challenge - 1]) ? "Complete the challenge!" :
               "Reach " + format(CHALLENGE_GOALS[x - 1]) + " to complete the challenge. Click here to exit your challenge." :
               game.number.gte(1e12) ? "Exponentiate for " + format(getExponentGain()) + " exponents (Next at " + format(getNextExponent()) + ")" :
               "Reach 1.000e12 to Exponentiate"
