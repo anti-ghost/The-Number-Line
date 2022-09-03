@@ -194,7 +194,7 @@
                   <button 
                     @click="upgrade(1)"
                     class="exponentButton upgradeButton"
-                    :class="game.upgrades.includes(1) ? 'bought' : canUpgrade(1) ? '' : 'locked'"
+                    :class="inChal(2) ? 'locked' : game.upgrades.includes(1) ? 'bought' : canUpgrade(1) ? '' : 'locked'"
                   >
                     Number gain is boosted by the total number of Compressors<br />
                     Currently: x{{format(game.compressors.reduce((x, y) => x.add(y)).add(1))}}<br />
@@ -238,7 +238,7 @@
                   <button 
                     @click="upgrade(5)"
                     class="exponentButton upgradeButton"
-                    :class="game.upgrades.includes(5) ? 'bought' : canUpgrade(5) ? '' : 'locked'"
+                    :class="inChal(2) ? 'locked' : game.upgrades.includes(5) ? 'bought' : canUpgrade(5) ? '' : 'locked'"
                   >
                     Compressors are 10% more powerful<br /><br />
                     Cost: 20 Exponents
@@ -295,6 +295,18 @@
                     Compressor costs start scaling instantly (normally at 1.000e12). Compressor multipliers become 4x.<br />
                     Goal: 1.000e12<br />
                     Reward: Compressor costs scale 10% slower
+                  </button>
+                </td>
+                <td>
+                  <button
+                    @click="enterChal(2)"
+                    class="exponentButton challenge"
+                    :class="game.chalComp.includes(2) ? 'bought cursorPointer' : inChal(2) ? 'running' : ''"
+                  >
+                    Challenge 2<br />
+                    The first column of exponent upgrades is disabled.<br />
+                    Goal: ???<br />
+                    Reward: The Exponent formula is improved (<var>x</var><sup>1/12</sup> → <var>x</var><sup>1/10</sup>)
                   </button>
                 </td>
               </tr>
