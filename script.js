@@ -129,7 +129,7 @@
   }
   
   function getExponentGain(x = game.number) {
-    return x.div(1e12).root(12 - 2 * game.chalComp.includes(2)).floor();
+    return x.root(12 - 2 * game.chalComp.includes(2)).div(10).floor();
   }
   
   function getNextExponent(x = game.number) {
