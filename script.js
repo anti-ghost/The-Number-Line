@@ -102,10 +102,14 @@
   }
   
   function getNumberRate(t = 1) {
-    let rate = D.pow(2, game.compressors.reduce((x, y) => x.add(y)));
+    let rate = D.pow(getCompressorBase(), game.compressors.reduce((x, y) => x.add(y)));
     if (game.upgrades.includes(1)) rate = rate.mul(game.compressors.reduce((x, y) => x.add(y)).add(1));
     if (game.upgrades.includes(3)) rate = rate.mul(game.exponents.add(1).sqrt());
     return rate.mul(t);
+  }
+  
+  function getCompressorBase() {
+    return inChal(1) ? D(10): D(2);
   }
   
   function getCompressCost(x) {
@@ -408,6 +412,7 @@
     checkNaNs,
     timePlayed,
     getNumberRate,
+    getCompressorBase,
     getCompressCost,
     canCompress,
     getExponentGain,
