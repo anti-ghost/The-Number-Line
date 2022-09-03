@@ -263,22 +263,16 @@
   
   function enterChal(x) {
     if (
-      !game.chalConf ||
-      confirm("Entering a challenge will perform an Exponent reset. You will need to reach a certain number inside the challenge to complete the challenge.")
+      game.upgrades.includes(4) &&
+      game.challenge == 0 && (
+        !game.chalConf ||
+        confirm("Entering a challenge will perform an Exponent reset. You will need to reach a certain number inside the challenge to complete the challenge.")
+      )
     ) {
       if (game.expOnChal) game.exponents = game.exponents.add(getExponentGain());
       resetCompressors();
       game.challenge = x;
     }
-  }
-  
-  function buyMax(x) {
-    if (game.number.lt(1e12)) {
-      const c = D.affordGeometricSeries(game.number, 10 ** x, 10 ** x, game.compressors[x - 1]),
-      n = D.sumGeometricSeries(c, 10 ** x, 10 ** x, game.compressors[x - 1]);
-      game.compressors[x - 1] = game.compressors[x - 1].add(c);
-      game.number = game.number.sub(n);
-    } else while (canCompress(x)) compress(x);
   }
   
   function loop(time) {
