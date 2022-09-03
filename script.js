@@ -109,7 +109,7 @@
   }
   
   function getCompressorBase() {
-    return inChal(1) ? D(10): D(2);
+    return inChal(1) ? D(4): D(2);
   }
   
   function getCompressCost(x) {
