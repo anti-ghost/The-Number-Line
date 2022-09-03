@@ -244,6 +244,17 @@
                     Cost: 20 Exponents
                   </button>
                 </td>
+                <td>
+                  <button 
+                    @click="upgrade(6)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(6) ? 'bought' : canUpgrade(6) ? '' : 'locked'"
+                  >
+                    Number gain is boosted by your number<br />
+                    Currently: x{{format(game.number.add(10).log10(), 3)}}<br />
+                    Cost: 50 Exponents
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
