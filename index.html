@@ -1,1 +1,355 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>The Number Line</title><link rel="stylesheet" href="style.css"><link rel="icon" href="https://anti-ghost.github.io/images/ghost.jpg"><script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.prod.js" defer="defer"></script><script src="https://code.jquery.com/jquery-3.6.1.min.js" defer="defer"></script><script src="notify.js" defer="defer"></script><script src="decimal.js" defer="defer"></script><script src="script.js" defer="defer"></script></head><body><div id="app" style="display:none"><h1>Number: {{format(game.number)}}</h1><p>Your number is increasing by {{format(getNumberRate())}} per second</p><p><button @click="tabs.tab = 0" class="tabButton">Compressors</button><button @click="tabs.tab = 1" class="tabButton">Options</button><button @click="tabs.tab = 2" class="tabButton">Statistics</button><button @click="tabs.tab = 3" v-if="game.expUnlocked || game.number.gte(1e12)" class="tabButton exponentButton">Exponents</button></p><div v-if="tabs.tab == 0"><table><tbody><tr><td><button @click="compress(1)" class="upgradeButton" :class="canCompress(1) ? '' : 'locked'">Compress the number line by {{format(getCompressorBase())}}x<br>Cost: {{format(getCompressCost(1))}}<br>Amount: {{format(game.compressors[0])}}</button></td><td><button @click="compress(2)" class="upgradeButton" :class="canCompress(2) ? '' : 'locked'">Compress the number line by {{format(getCompressorBase())}}x<br>Cost: {{format(getCompressCost(2))}}<br>Amount: {{format(game.compressors[1])}}</button></td></tr><tr><td><button @click="compress(3)" class="upgradeButton" :class="canCompress(3) ? '' : 'locked'">Compress the number line by {{format(getCompressorBase())}}x<br>Cost: {{format(getCompressCost(3))}}<br>Amount: {{format(game.compressors[2])}}</button></td><td><button @click="compress(4)" class="upgradeButton" :class="canCompress(4) ? '' : 'locked'">Compress the number line by {{format(getCompressorBase())}}x<br>Cost: {{format(getCompressCost(4))}}<br>Amount: {{format(game.compressors[3])}}</button></td></tr><tr><td><button @click="compress(5)" class="upgradeButton" :class="canCompress(5) ? '' : 'locked'">Compress the number line by {{format(getCompressorBase())}}x<br>Cost: {{format(getCompressCost(5))}}<br>Amount: {{format(game.compressors[4])}}</button></td><td><button @click="compress(6)" class="upgradeButton" :class="canCompress(6) ? '' : 'locked'">Compress the number line by {{format(getCompressorBase())}}x<br>Cost: {{format(getCompressCost(6))}}<br>Amount: {{format(game.compressors[5])}}</button></td></tr><tr><td><button @click="compress(7)" class="upgradeButton" :class="canCompress(7) ? '' : 'locked'">Compress the number line by {{format(getCompressorBase())}}x<br>Cost: {{format(getCompressCost(7))}}<br>Amount: {{format(game.compressors[6])}}</button></td><td><button @click="compress(8)" class="upgradeButton" :class="canCompress(8) ? '' : 'locked'">Compress the number line by {{format(getCompressorBase())}}x<br>Cost: {{format(getCompressCost(8))}}<br>Amount: {{format(game.compressors[7])}}</button></td></tr><tr><td><button @click="compress(9)" class="upgradeButton" :class="canCompress(9) ? '' : 'locked'">Compress the number line by {{format(getCompressorBase())}}x<br>Cost: {{format(getCompressCost(9))}}<br>Amount: {{format(game.compressors[8])}}</button></td><td><button @click="compress(10)" class="upgradeButton" :class="canCompress(10) ? '' : 'locked'">Compress the number line by {{format(getCompressorBase())}}x<br>Cost: {{format(getCompressCost(10))}}<br>Amount: {{format(game.compressors[9])}}</button></td></tr></tbody></table><p v-if="game.expUnlocked"><strong>WARNING:</strong>Compressor costs scale faster beyond 1.000e12: 10<sup><var>x</var></sup>→ 10<sup>10<sup><var>x</var>/12-1</sup>*(12/ln(10))+12-12/ln(10)</sup></p></div><div v-if="tabs.tab == 1"><table><tbody><tr><td><button @click="save(true)" class="optionsButton">Save your game</button></td><td><button @click="importSave()" class="optionsButton">Import your save</button></td></tr><tr><td><button @click="exportSave()" class="optionsButton">Export your save</button></td><td><button @click="hardReset()" class="optionsButton">Reset your game</button></td></tr></tbody></table><p><a href="howtoplay.html">How to play</a>|<a href="changelog.html">Changelog</a></p><p><small><i>Current version: 1.1.0<br>Last updated: September 3, 2022<br>© 2022<a href="https://github.com/anti-ghost">resu deteleD</a><br>This work is licensed under the<a href="https://opensource.org/licenses/MIT">MIT License</a></i></small></p></div><div v-if="tabs.tab == 2"><p>You have played for {{formatTime(timePlayed() / 1000)}}.</p><p>Your highest number was {{format(game.highestNumber)}}.</p></div><div v-if="tabs.tab == 3"><h2>You have {{format(game.exponents)}} exponents</h2><p><button @click="exponentiate()" class="exponentButton prestigeButton" :class="game.challenge > 0 || game.number.gte(1e12) ? '' : 'locked'">{{ game.challenge > 0 ? game.number.gte(CHALLENGE_GOALS[game.challenge - 1]) ? "Complete the challenge!" : "Reach " + format(CHALLENGE_GOALS[game.challenge - 1]) + " to complete the challenge. Click here to exit your challenge." : game.number.gte(1e12) ? "Exponentiate for " + format(getExponentGain()) + " exponents (Next at " + format(getNextExponent()) + ")" : "Reach 1.000e12 to Exponentiate" }}</button></p><p><button @click="tabs.expSubtab = 0" class="exponentButton">Upgrades</button>&nbsp;<button @click="tabs.expSubtab = 1" v-if="game.upgrades.includes(2)" class="exponentButton">Autobuyers</button>&nbsp;<button @click="tabs.expSubtab = 2" v-if="game.upgrades.includes(4)" class="exponentButton">Challenges</button></p><div v-if="tabs.expSubtab == 0"><table><tbody><tr><td><button @click="upgrade(1)" class="exponentButton upgradeButton" :class="inChal(2) ? 'locked' : game.upgrades.includes(1) ? 'bought' : canUpgrade(1) ? '' : 'locked'">Number gain is boosted by the total number of Compressors<br>Currently: x{{format(game.compressors.reduce((x, y) => x.add(y)).add(1))}}<br>Cost: 1 Exponent</button></td><td><button @click="upgrade(2)" class="exponentButton upgradeButton" :class="game.upgrades.includes(2) ? 'bought' : canUpgrade(2) ? '' : 'locked'">Unlock autobuyers for Compressors<br><br>Cost: 2 Exponents</button></td><td><button @click="upgrade(3)" class="exponentButton upgradeButton" :class="game.upgrades.includes(3) ? 'bought' : canUpgrade(3) ? '' : 'locked'">Number gain is boosted by Exponents<br>Currently: x{{format(game.exponents.add(1).sqrt(), 3)}}<br>Cost: 3 Exponents</button></td><td><button @click="upgrade(4)" class="exponentButton upgradeButton" :class="game.upgrades.includes(4) ? 'bought' : canUpgrade(4) ? '' : 'locked'">Unlock Challenges<br><br>Need 10 Exponents</button></td></tr><tr><td><button @click="upgrade(5)" class="exponentButton upgradeButton" :class="inChal(2) ? 'locked' : game.upgrades.includes(5) ? 'bought' : canUpgrade(5) ? '' : 'locked'">Compressors are 10% more powerful<br><br>Cost: 20 Exponents</button></td><td><button @click="upgrade(6)" class="exponentButton upgradeButton" :class="game.upgrades.includes(6) ? 'bought' : canUpgrade(6) ? '' : 'locked'">Number gain is boosted by your number<br>Currently: x{{format(game.number.add(10).log10(), 3)}}<br>Cost: 50 Exponents</button></td><td><button @click="upgrade(7)" class="exponentButton upgradeButton" :class="game.upgrades.includes(7) ? 'bought' : canUpgrade(7) ? '' : 'locked'">Number gain is boosted by total time played<br>Currently: x{{format(D.pow(timePlayed() / 1000, 0.2), 3)}}<br>Cost: 500 Exponents</button></td><td><button class="exponentButton upgradeButton locked">???<br><br>???</button></td></tr></tbody></table></div><div v-if="tabs.expSubtab == 1"><p><button @click="enableAutobuyers()" class="exponentButton">Enable all</button>&nbsp;<button @click="disableAutobuyers()" class="exponentButton">Disable all</button></p><p v-for="x in 10">Autobuyer {{x}}: {{onOff(game.autobuyers[x - 1])}}<button @click="game.autobuyers[x - 1] = !game.autobuyers[x - 1]" class="exponentButton">{{enableDisable(game.autobuyers[x - 1])}}</button></p></div><div v-if="tabs.expSubtab == 2"><p><button @click="game.chalConf = !game.chalConf" class="exponentButton">Challenge confirmation: {{onOff(game.chalConf)}}</button>&nbsp;<button @click="game.expOnChal = !game.expOnChal" class="exponentButton">Automatically exponentiate before entering a Challenge: {{onOff(game.expOnChal)}}</button></p><table><tbody><tr><td><button @click="enterChal(1)" class="exponentButton challenge" :class="game.chalComp.includes(1) ? 'bought cursorPointer' : inChal(1) ? 'running' : ''">Challenge 1<br>Compressor costs start scaling instantly (normally at 1.000e12). Compressor multipliers become 4x.<br>Goal: 1.000e12<br>Reward: Compressor costs scale 10% slower</button></td><td><button @click="enterChal(2)" class="exponentButton challenge" :class="game.chalComp.includes(2) ? 'bought cursorPointer' : inChal(2) ? 'running' : ''">Challenge 2<br>The first column of exponent upgrades is disabled.<br>Goal: 1.000e20<br>Reward: The Exponent formula is improved (<var>x</var><sup>1/12</sup>→<var>x</var><sup>1/10</sup>)</button></td></tr></tbody></table></div></div></div><div id="fake" style="display:none"><h1>It turns out someone is trying to steal the game!</h1><p>Please go to<a href="https://anti-ghost.github.io/The-Number-Line/">https://anti-ghost.github.io/The-Number-Line/</a>.</p><p><small><i>You are seeing this message because you are visiting a fake replica of The Number Line. These games are not trusted by<a href="https://github.com/anti-ghost">resu deteleD</a>, developer and publisher of The Number Line, and may contain malware and/or errors.</i></small></p><p><small><i>If you are creating a legitimate spin-off of The Number Line, please remove this message from your game. You are required to attribute resu deteleD for all copies or substantial portions of The Number Line.</i></small></p></div></body></html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>The Number Line</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="https://anti-ghost.github.io/images/ghost.jpg" />
+    <script 
+      src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.prod.js"
+      defer
+    ></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.1.min.js"
+      defer
+    ></script>
+    <script src="notify.js" defer></script>
+    <script src="decimal.js" defer></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <div id="app" style="display: none;">
+      <h1>Number: {{format(game.number)}}</h1>
+      <p>Your number is increasing by {{format(getNumberRate())}} per second</p>
+      <p>
+        <button @click="tabs.tab = 0" class="tabButton">
+          Compressors
+        </button>
+        <button @click="tabs.tab = 1" class="tabButton">
+          Options
+        </button>
+        <button @click="tabs.tab = 2" class="tabButton">
+          Statistics
+        </button>
+        <button @click="tabs.tab = 3" v-if="game.expUnlocked || game.number.gte(1e12)" class="tabButton exponentButton">
+          Exponents
+        </button>
+      </p>
+      <div v-if="tabs.tab == 0">
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <button @click="compress(1)" class="upgradeButton" :class="canCompress(1) ? '' : 'locked'">
+                  Compress the number line by {{format(getCompressorBase())}}x<br />
+                  Cost: {{format(getCompressCost(1))}}<br />
+                  Amount: {{format(game.compressors[0])}}
+                </button>
+              </td>
+              <td>
+                <button @click="compress(2)" class="upgradeButton" :class="canCompress(2) ? '' : 'locked'">
+                  Compress the number line by {{format(getCompressorBase())}}x<br />
+                  Cost: {{format(getCompressCost(2))}}<br />
+                  Amount: {{format(game.compressors[1])}}
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button @click="compress(3)" class="upgradeButton" :class="canCompress(3) ? '' : 'locked'">
+                  Compress the number line by {{format(getCompressorBase())}}x<br />
+                  Cost: {{format(getCompressCost(3))}}<br />
+                  Amount: {{format(game.compressors[2])}}
+                </button>
+              </td>
+              <td>
+                <button @click="compress(4)" class="upgradeButton" :class="canCompress(4) ? '' : 'locked'">
+                  Compress the number line by {{format(getCompressorBase())}}x<br />
+                  Cost: {{format(getCompressCost(4))}}<br />
+                  Amount: {{format(game.compressors[3])}}
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button @click="compress(5)" class="upgradeButton" :class="canCompress(5) ? '' : 'locked'">
+                  Compress the number line by {{format(getCompressorBase())}}x<br />
+                  Cost: {{format(getCompressCost(5))}}<br />
+                  Amount: {{format(game.compressors[4])}}
+                </button>
+              </td>
+              <td>
+                <button @click="compress(6)" class="upgradeButton" :class="canCompress(6) ? '' : 'locked'">
+                  Compress the number line by {{format(getCompressorBase())}}x<br />
+                  Cost: {{format(getCompressCost(6))}}<br />
+                  Amount: {{format(game.compressors[5])}}
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button @click="compress(7)" class="upgradeButton" :class="canCompress(7) ? '' : 'locked'">
+                  Compress the number line by {{format(getCompressorBase())}}x<br />
+                  Cost: {{format(getCompressCost(7))}}<br />
+                  Amount: {{format(game.compressors[6])}}
+                </button>
+              </td>
+              <td>
+                <button @click="compress(8)" class="upgradeButton" :class="canCompress(8) ? '' : 'locked'">
+                  Compress the number line by {{format(getCompressorBase())}}x<br />
+                  Cost: {{format(getCompressCost(8))}}<br />
+                  Amount: {{format(game.compressors[7])}}
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button @click="compress(9)" class="upgradeButton" :class="canCompress(9) ? '' : 'locked'">
+                  Compress the number line by {{format(getCompressorBase())}}x<br />
+                  Cost: {{format(getCompressCost(9))}}<br />
+                  Amount: {{format(game.compressors[8])}}
+                </button>
+              </td>
+              <td>
+                <button @click="compress(10)" class="upgradeButton" :class="canCompress(10) ? '' : 'locked'">
+                  Compress the number line by {{format(getCompressorBase())}}x<br />
+                  Cost: {{format(getCompressCost(10))}}<br />
+                  Amount: {{format(game.compressors[9])}}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p v-if="game.expUnlocked">
+          <strong>WARNING:</strong> Compressor costs scale faster beyond 1.000e12:
+          10<sup><var>x</var></sup> → 10<sup>10<sup><var>x</var>/12-1</sup>*(12/ln(10))+12-12/ln(10)</sup>
+        </p>
+      </div>
+      <div v-if="tabs.tab == 1">
+        <table>
+          <tbody>
+            <tr>
+              <td><button @click="save(true)" class="optionsButton">Save your game</button></td>
+              <td><button @click="importSave()" class="optionsButton">Import your save</button></td>
+            </tr>
+            <tr>
+              <td><button @click="exportSave()" class="optionsButton">Export your save</button></td>
+              <td><button @click="hardReset()" class="optionsButton">Reset your game</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          <a href="howtoplay.html">How to play</a> |
+          <a href="changelog.html">Changelog</a>
+        </p>
+        <p>
+          <small>
+            <i>
+              Current version: 1.1.0<br />
+              Last updated: September 3, 2022<br />
+              © 2022 <a href="https://github.com/anti-ghost">resu deteleD</a><br />
+              This work is licensed under the <a href="https://opensource.org/licenses/MIT">MIT License</a>
+            </i>
+          </small>
+        </p>
+      </div>
+      <div v-if="tabs.tab == 2">
+        <p>You have played for {{formatTime(timePlayed() / 1000)}}.</p>
+        <p>Your highest number was {{format(game.highestNumber)}}.</p>
+      </div>
+      <div v-if="tabs.tab == 3">
+        <h2>You have {{format(game.exponents)}} exponents</h2>
+        <p>
+          <button 
+            @click="exponentiate()" 
+            class="exponentButton prestigeButton" 
+            :class="game.challenge > 0 || game.number.gte(1e12) ? '' : 'locked'"
+          >
+            {{
+              game.challenge > 0 ? game.number.gte(CHALLENGE_GOALS[game.challenge - 1]) ? "Complete the challenge!" :
+              "Reach " + format(CHALLENGE_GOALS[game.challenge - 1]) + " to complete the challenge. Click here to exit your challenge." :
+              game.number.gte(1e12) ? "Exponentiate for " + format(getExponentGain()) + " exponents (Next at " + format(getNextExponent()) + ")" :
+              "Reach 1.000e12 to Exponentiate"
+            }}
+          </button>
+        </p>
+        <p>
+          <button @click="tabs.expSubtab = 0" class="exponentButton">
+            Upgrades
+          </button>&nbsp;<button @click="tabs.expSubtab = 1" v-if="game.upgrades.includes(2)" class="exponentButton">
+            Autobuyers
+          </button>&nbsp;<button @click="tabs.expSubtab = 2" v-if="game.upgrades.includes(4)" class="exponentButton">
+            Challenges
+          </button>
+        </p>
+        <div v-if="tabs.expSubtab == 0">
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <button 
+                    @click="upgrade(1)"
+                    class="exponentButton upgradeButton"
+                    :class="inChal(2) ? 'locked' : game.upgrades.includes(1) ? 'bought' : canUpgrade(1) ? '' : 'locked'"
+                  >
+                    Number gain is boosted by the total number of Compressors<br />
+                    Currently: x{{format(game.compressors.reduce((x, y) => x.add(y)).add(1))}}<br />
+                    Cost: 1 Exponent
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(2)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(2) ? 'bought' : canUpgrade(2) ? '' : 'locked'"
+                  >
+                    Unlock autobuyers for Compressors<br /><br />
+                    Cost: 2 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(3)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(3) ? 'bought' : canUpgrade(3) ? '' : 'locked'"
+                  >
+                    Number gain is boosted by Exponents<br />
+                    Currently: x{{format(game.exponents.add(1).sqrt(), 3)}}<br />
+                    Cost: 3 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(4)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(4) ? 'bought' : canUpgrade(4) ? '' : 'locked'"
+                  >
+                    Unlock Challenges<br /><br />
+                    Need 10 Exponents
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <button 
+                    @click="upgrade(5)"
+                    class="exponentButton upgradeButton"
+                    :class="inChal(2) ? 'locked' : game.upgrades.includes(5) ? 'bought' : canUpgrade(5) ? '' : 'locked'"
+                  >
+                    Compressors are 10% more powerful<br /><br />
+                    Cost: 20 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(6)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(6) ? 'bought' : canUpgrade(6) ? '' : 'locked'"
+                  >
+                    Number gain is boosted by your number<br />
+                    Currently: x{{format(game.number.add(10).log10(), 3)}}<br />
+                    Cost: 50 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(7)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(7) ? 'bought' : canUpgrade(7) ? '' : 'locked'"
+                  >
+                    Number gain is boosted by total time played<br />
+                    Currently: x{{format(D.pow(timePlayed() / 1000, 0.2), 3)}}<br />
+                    Cost: 500 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button class="exponentButton upgradeButton locked">
+                    ???<br /><br />
+                    ???
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div v-if="tabs.expSubtab == 1">
+          <p>
+            <button @click="enableAutobuyers()" class="exponentButton">
+              Enable all
+            </button>&nbsp;<button @click="disableAutobuyers()" class="exponentButton">
+              Disable all
+            </button>
+          </p>
+          <p v-for="x in 10">
+            Autobuyer {{x}}: {{onOff(game.autobuyers[x - 1])}}
+            <button @click="game.autobuyers[x - 1] = !game.autobuyers[x - 1]" class="exponentButton">
+              {{enableDisable(game.autobuyers[x - 1])}}
+            </button>
+          </p>
+        </div>
+        <div v-if="tabs.expSubtab == 2">
+          <p>
+            <button @click="game.chalConf = !game.chalConf" class="exponentButton">
+              Challenge confirmation: {{onOff(game.chalConf)}}
+            </button>&nbsp;<button @click="game.expOnChal = !game.expOnChal" class="exponentButton">
+              Automatically exponentiate before entering a Challenge: {{onOff(game.expOnChal)}}
+            </button>
+          </p>
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <button
+                    @click="enterChal(1)"
+                    class="exponentButton challenge"
+                    :class="game.chalComp.includes(1) ? 'bought cursorPointer' : inChal(1) ? 'running' : ''"
+                  >
+                    Challenge 1<br />
+                    Compressor costs start scaling instantly (normally at 1.000e12). Compressor multipliers become 4x.<br />
+                    Goal: 1.000e12<br />
+                    Reward: Compressor costs scale 10% slower
+                  </button>
+                </td>
+                <td>
+                  <button
+                    @click="enterChal(2)"
+                    class="exponentButton challenge"
+                    :class="game.chalComp.includes(2) ? 'bought cursorPointer' : inChal(2) ? 'running' : ''"
+                  >
+                    Challenge 2<br />
+                    The first column of exponent upgrades is disabled.<br />
+                    Goal: 1.000e20<br />
+                    Reward: The Exponent formula is improved (<var>x</var><sup>1/12</sup> → <var>x</var><sup>1/10</sup>)
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div id="fake" style="display: none;">
+      <h1>It turns out someone is trying to steal the game!</h1>
+      <p>
+        Please go to <a href="https://anti-ghost.github.io/The-Number-Line/">https://anti-ghost.github.io/The-Number-Line/</a>.
+      </p>
+      <p>
+        <small>
+          <i>
+            You are seeing this message because you are visiting a fake replica of The Number Line.
+            These games are not trusted by <a href="https://github.com/anti-ghost">resu deteleD</a>,
+            developer and publisher of The Number Line, and may contain malware and/or errors.
+          </i>
+        </small>
+      </p>
+      <p>
+        <small>
+          <i>
+            If you are creating a legitimate spin-off of The Number Line, please remove this message from your game.
+            You are required to attribute resu deteleD for all copies or substantial portions of The Number Line.
+          </i>
+        </small>
+      </p>
+    </div>
+  </body>
+</html>
