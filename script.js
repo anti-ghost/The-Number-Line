@@ -10,7 +10,7 @@
     return;
   }
   
-  const DEBUG = btoa(location.href) != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pby9UaGUtTnVtYmVyLUxpbmUv";
+  const DEBUG = true;
   
   const VERSION = "1.1.0";
   
@@ -293,6 +293,8 @@
   
   function simulateTime(ms) {
     if (NaNerror) return;
+    game.debug = DEBUG;
+    game.version = VERSION;
     game.lastTick = Date.now();
     if (DEBUG) ms *= dev.speed;
     for (let i = 0; i < 10; i++) {
