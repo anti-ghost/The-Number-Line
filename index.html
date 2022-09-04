@@ -180,6 +180,8 @@
             Autobuyers
           </button>&nbsp;<button @click="tabs.expSubtab = 2" v-if="game.upgrades.includes(4)" class="exponentButton">
             Challenges
+          </button>&nbsp;<button @click="tabs.expSubtab = 3" v-if="game.upgrades.includes(8)" class="exponentButton">
+            Matter
           </button>
         </p>
         <div v-if="tabs.expSubtab == 0">
@@ -263,9 +265,13 @@
                   </button>
                 </td>
                 <td>
-                  <button class="exponentButton upgradeButton locked">
-                    ???<br /><br />
-                    ???
+                  <button 
+                    @click="upgrade(8)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(8) ? 'bought' : canUpgrade(8) ? '' : 'locked'"
+                  >
+                    Unlock Matter<br /><br />
+                    Need 10000 Exponents
                   </button>
                 </td>
               </tr>
