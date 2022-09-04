@@ -268,7 +268,9 @@
       game.upgrades.includes(4) &&
       game.challenge == 0 && (
         !game.chalConf ||
-        confirm("Entering a challenge will perform an Exponent reset. You will need to reach a certain number inside the challenge to complete the challenge.")
+        confirm(
+          "Entering a challenge will perform an Exponent reset. You will need to reach the required number under certain restrictions to complete the challenge."
+        )
       )
     ) {
       if (game.expOnChal) game.exponents = game.exponents.add(getExponentGain());
@@ -382,7 +384,7 @@
   }
   
   function hardReset() {
-    if (prompt('Are you sure you want to reset your game? This cannot be undone! Type "reset" without quotation marks to reset your game.') === "reset") {
+    if (prompt("Are you sure you want to reset your game? This cannot be undone! Type “reset” without quotation marks to reset your game.") === "reset") {
       localStorage.removeItem(DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave");
       location.reload();
     }
