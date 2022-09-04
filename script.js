@@ -1,9 +1,3 @@
-/*
-  The Number Line v1.0.0
-  Copyright © 2022 resu deteleD
-  Licensed under the MIT License
-*/
-
 (function(global) {
   "use strict";
   
@@ -16,9 +10,9 @@
     return;
   }
   
-  const DEBUG = btoa(location.href) != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pby9UaGUtTnVtYmVyLUxpbmUv";
+  const DEBUG = true;
   
-  const VERSION = "1.0.0";
+  const VERSION = "1.1.0";
   
   const Vue = global.Vue;
   
@@ -62,10 +56,16 @@
       true,
       true,
       true
-    ]
+    ],
+    challenge: 0,
+    chalComp: [],
+    chalConf: true,
+    expOnChal: true
   };
   
-  const UPGRADE_COSTS = [D(1), D(2), D(3), D(Infinity)];
+  const UPGRADE_COSTS = [D(1), D(2), D(3), D(10), D(20), D(50), D(500)];
+  
+  const CHALLENGE_GOALS = [D(1e12), D(1e20)];
   
   const tabs = Vue.reactive({
     tab: 0,
@@ -96,15 +96,26 @@
   }
   
   function getNumberRate(t = 1) {
-    let rate = D.pow(2, game.compressors.reduce((x, y) => x.add(y)));
-    if (game.upgrades.includes(1)) rate = rate.mul(game.compressors.reduce((x, y) => x.add(y)).add(1));
+    let rate = D.pow(getCompressorBase(), game.compressors.reduce((x, y) => x.add(y)));
+    if (!inChal(2) && game.upgrades.includes(1)) rate = rate.mul(game.compressors.reduce((x, y) => x.add(y)).add(1));
     if (game.upgrades.includes(3)) rate = rate.mul(game.exponents.add(1).sqrt());
+    if (game.upgrades.includes(6)) rate = rate.mul(game.number.add(10).log10());
+    if (game.upgrades.includes(7)) rate = rate.mul(D.pow(timePlayed() / 1000, 0.2));
     return rate.mul(t);
+  }
+  
+  function getCompressorBase() {
+    let x = inChal(1) ? D(4): D(2);
+    if (!inChal(2) && game.upgrades.includes(5)) x = x.mul(1.1);
+    return x;
   }
   
   function getCompressCost(x) {
     let e = game.compressors[x - 1].add(1).mul(x);
+    if (game.chalComp.includes(1)) e = e.mul(0.9);
+    if (inChal(1)) e = e.add(12);
     if (e.gt(12)) e = D.pow10(e.div(12).sub(1)).mul(12).div(D.ln(10)).add(12).sub(D.div(12, D.ln(10)));
+    if (inChal(1)) e = e.sub(12);
     return D.pow10(e);
   }
   
@@ -113,11 +124,19 @@
   }
   
   function getExponentGain(x = game.number) {
-    return x.div(1e12).root(12).floor();
+    return x.root(12 - 2 * game.chalComp.includes(2)).div(10).floor();
+  }
+  
+  function getNextExponent(x = game.number) {
+    return getExponentGain(x).add(1).mul(10).pow(12 - 2 * game.chalComp.includes(2));
   }
   
   function canUpgrade(x) {
     return (x == 1 || game.upgrades.includes(x - 2)) && game.exponents.gte(UPGRADE_COSTS[x - 1]);
+  }
+  
+  function inChal(x) {
+    return game.challenge == x;
   }
   
   function format(number, f = 0) {
@@ -126,7 +145,7 @@
       NaNalert();
       return "NaN";
     }
-    if (number.sign == -1) return "-" + format(-number);
+    if (number.sign == -1) return "-" + format(number.neg());
     if (number.eq(Infinity)) return "Infinity";
     if (number.sign == 0) return "0";
     if (number.lt(1000)) return number.toNumber().toFixed(f);
@@ -167,6 +186,49 @@
     return format(time.div(31536000)) + " years";
   }
   
+  function onOff(x) {
+    return x ? "ON" : "OFF";
+  }
+  
+  function enableDisable(x) {
+    return x ? "Disable" : "Enable";
+  }
+  
+  function buyMax(x) {
+    if (!inChal(1) && game.number.lt(1e12 ** (1 + game.chalComp.includes(1) / 9))) {
+      const c = D.affordGeometricSeries(
+        game.number,
+        10 ** (x / (1 + game.chalComp.includes(1) / 9)),
+        10 ** (x / (1 + game.chalComp.includes(1) / 9)),
+        game.compressors[x - 1]
+      ),
+        n = D.sumGeometricSeries(
+          c,
+          10 ** (x / (1 + game.chalComp.includes(1) / 9)),
+          10 ** (x / (1 + game.chalComp.includes(1) / 9)),
+          game.compressors[x - 1]
+        );
+      game.compressors[x - 1] = game.compressors[x - 1].add(c);
+      game.number = game.number.sub(n);
+    } else while (canCompress(x)) compress(x);
+  }
+  
+  function resetCompressors() {
+    game.number = D(0);
+    game.compressors = [
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0),
+      D(0)
+    ];
+  }
+  
   function compress(x) {
     if (canCompress(x)) {
       game.number = game.number.sub(getCompressCost(x));
@@ -175,38 +237,22 @@
   }
   
   function exponentiate() {
-    if (game.number.gte(1e12)) {
+    if (game.challenge > 0) {
+      if (!game.chalComp.includes(game.challenge) && game.number.gte(CHALLENGE_GOALS[game.challenge - 1])) game.chalComp.push(game.challenge);
+      game.challenge = 0;
+      resetCompressors();
+    } else if (game.number.gte(1e12)) {
       game.expUnlocked = true;
       game.exponents = game.exponents.add(getExponentGain());
-      game.number = D(0);
-      game.compressors = [
-        D(0),
-        D(0),
-        D(0),
-        D(0),
-        D(0),
-        D(0),
-        D(0),
-        D(0),
-        D(0),
-        D(0)
-      ];
+      resetCompressors();
     }
   }
   
   function upgrade(x) {
     if (canUpgrade(x)) {
-      game.exponents = game.exponents.sub(UPGRADE_COSTS[x - 1]);
+      if (x % 4 > 0) game.exponents = game.exponents.sub(UPGRADE_COSTS[x - 1]);
       game.upgrades.push(x);
     }
-  }
-  
-  function onOff(x) {
-    return x ? "ON" : "OFF";
-  }
-  
-  function enableDisable(x) {
-    return x ? "Disable" : "Enable";
   }
   
   function enableAutobuyers() {
@@ -217,13 +263,20 @@
     for (let i = 0; i < 10; i++) game.autobuyers[i] = false;
   }
   
-  function buyMax(x) {
-    if (game.number.lt(1e12)) {
-      const c = D.affordGeometricSeries(game.number, 10 ** x, 10 ** x, game.compressors[x - 1]),
-      n = D.sumGeometricSeries(c, 10 ** x, 10 ** x, game.compressors[x - 1]);
-      game.compressors[x - 1] = game.compressors[x - 1].add(c);
-      game.number = game.number.sub(n);
-    } else while (canCompress(x)) compress(x);
+  function enterChal(x) {
+    if (
+      game.upgrades.includes(4) &&
+      game.challenge == 0 && (
+        !game.chalConf ||
+        confirm(
+          "Entering a challenge will perform an Exponent reset. You will need to reach the required number under certain restrictions to complete the challenge."
+        )
+      )
+    ) {
+      if (game.expOnChal) game.exponents = game.exponents.add(getExponentGain());
+      resetCompressors();
+      game.challenge = x;
+    }
   }
   
   function loop(time) {
@@ -240,6 +293,8 @@
   
   function simulateTime(ms) {
     if (NaNerror) return;
+    game.debug = DEBUG;
+    game.version = VERSION;
     game.lastTick = Date.now();
     if (DEBUG) ms *= dev.speed;
     for (let i = 0; i < 10; i++) {
@@ -265,6 +320,7 @@
       $.notify("Import failed, attempted to load development save into the main game.", "error");
       return;
     }
+    reset();
     for (const i in loadgame) {
       game[i] = loadgame[i];
     }
@@ -316,7 +372,6 @@
       const txt = prompt("Copy-paste your save. WARNING: WILL OVERWRITE YOUR SAVE");
       loadGame(JSON.parse(atob(txt)));
       save();
-      location.reload();
     } catch (e) {
       if (DEBUG) console.log(e);
     }
@@ -331,7 +386,7 @@
   }
   
   function hardReset() {
-    if (prompt('Are you sure you want to reset your game? This cannot be undone! Type "reset" without quotation marks to reset your game.') === "reset") {
+    if (prompt("Are you sure you want to reset your game? This cannot be undone! Type “reset” without quotation marks to reset your game.") === "reset") {
       localStorage.removeItem(DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave");
       location.reload();
     }
@@ -339,72 +394,61 @@
   
   const app = Vue.createApp({
     data() {
-      return {
-        $,
-        D,
-        game,
-        tabs,
-        save,
-        importSave,
-        exportSave,
-        hardReset,
-        compress,
-        exponentiate,
-        upgrade,
-        onOff,
-        enableDisable,
-        enableAutobuyers,
-        disableAutobuyers,
-        timePlayed,
-        getNumberRate,
-        getCompressCost,
-        getExponentGain,
-        canCompress,
-        canUpgrade,
-        format,
-        formatTime
-      };
+      return dev;
     }
   });
   
+  const dev = {
+    $,
+    D,
+    VERSION,
+    DEBUG,
+    speed: 1,
+    game,
+    newGame,
+    UPGRADE_COSTS,
+    CHALLENGE_GOALS,
+    tabs,
+    NaNerror,
+    NaNalert,
+    checkNaNs,
+    timePlayed,
+    getNumberRate,
+    getCompressorBase,
+    getCompressCost,
+    canCompress,
+    getExponentGain,
+    getNextExponent,
+    canUpgrade,
+    inChal,
+    format,
+    formatTime,
+    onOff,
+    enableDisable,
+    buyMax,
+    resetCompressors,
+    compress,
+    exponentiate,
+    upgrade,
+    enableAutobuyers,
+    disableAutobuyers,
+    enterChal,
+    loop,
+    simulateTime,
+    reset,
+    loadGame,
+    save,
+    load,
+    copyStringToClipboard,
+    importSave,
+    exportSave,
+    hardReset,
+    app
+  };
+  
   if (DEBUG) {
-    global.dev = {
-      speed: 1,
-      game,
-      newGame,
-      UPGRADE_COSTS,
-      tabs,
-      NaNerror,
-      NaNalert,
-      checkNaNs,
-      timePlayed,
-      getNumberRate,
-      getCompressCost,
-      canCompress,
-      getExponentGain,
-      canUpgrade,
-      format,
-      formatTime,
-      compress,
-      exponentiate,
-      upgrade,
-      onOff,
-      enableDisable,
-      enableAutobuyers,
-      disableAutobuyers,
-      buyMax,
-      loop,
-      simulateTime,
-      reset,
-      loadGame,
-      save,
-      load,
-      copyStringToClipboard,
-      importSave,
-      exportSave,
-      hardReset,
-      app
-    };
+    global.dev = dev;
+    global.app = app;
   }
   
   load();

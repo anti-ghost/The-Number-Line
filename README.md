@@ -20,6 +20,10 @@ You must buy the previous upgrade before buying an upgrade.
 ### Autobuyers
 When you buy the 2<sup>nd</sup> exponent upgrade, you unlock autobuyers. Autobuyers automate buying compressors.
 You may enable or disable each autobuyer individually.
+### Challenges
+When you enter a challenge, you must reach the required number under certain restrictions to complete it.
+Completing challenges will give boosts to your production.
+You can exit a challenge if you don’t think you are able to complete the challenge.
 # Changelog
 This is a list of changes for The Number Line.
 ## v0.0.0 – Initial Development
@@ -31,3 +35,8 @@ This is a list of changes for The Number Line.
 * Major styling changes
 * Added How to Play page
 * Added changelog
+## v1.1.0 – The Challenge Update (September 3, 2022)
+* Added Challenges
+* Added 4 more exponent upgrades
+* Some styling changes
+* Multiple bug fixes
