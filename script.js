@@ -10,7 +10,7 @@
     return;
   }
   
-  const DEBUG = true;
+  const DEBUG = false;
   
   const VERSION = "1.1.0";
   
