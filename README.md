@@ -35,3 +35,8 @@ This is a list of changes for The Number Line.
 * Major styling changes
 * Added How to Play page
 * Added changelog
+## v1.1.0 – The Challenge Update (September 3, 2022)
+* Added Challenges
+* Added 4 more exponent upgrades
+* Some styling changes
+* Multiple bug fixes
