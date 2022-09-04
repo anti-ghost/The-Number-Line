@@ -1,10 +1,3 @@
-/*
-  The Number Line v1.1.0
-  Copyright © 2022 resu deteleD
-  Licensed under the MIT License
-  Date: September 3, 2022
-*/
-
 (function(global) {
   "use strict";
   
