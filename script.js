@@ -60,10 +60,12 @@
     challenge: 0,
     chalComp: [],
     chalConf: true,
-    expOnChal: true
+    expOnChal: true,
+    matter: D(0),
+    matterEnabled: false
   };
   
-  const UPGRADE_COSTS = [D(1), D(2), D(3), D(10), D(20), D(50), D(500)];
+  const UPGRADE_COSTS = [D(1), D(2), D(3), D(10), D(20), D(50), D(500), D(10000)];
   
   const CHALLENGE_GOALS = [D(1e12), D(1e20)];
   
@@ -101,6 +103,7 @@
     if (game.upgrades.includes(3)) rate = rate.mul(game.exponents.add(1).sqrt());
     if (game.upgrades.includes(6)) rate = rate.mul(game.number.add(10).log10());
     if (game.upgrades.includes(7)) rate = rate.mul(D.pow(timePlayed() / 1000, 0.2));
+    rate = rate.mul(getMatterEffect());
     return rate.mul(t);
   }
   
@@ -137,6 +140,16 @@
   
   function inChal(x) {
     return game.challenge == x;
+  }
+  
+  function getMatterGain(t = 1) {
+    let rate = getNumberRate(t);
+    rate = rate.div(getMatterEffect());
+    return rate;
+  }
+  
+  function getMatterEffect(x = game.matter) {
+    return x.add(10).log10();
   }
   
   function format(number, f = 0) {
@@ -282,7 +295,8 @@
   function loop(time) {
     if (!NaNerror && checkNaNs()) NaNalert();
     if (NaNerror) return;
-    game.number = game.number.add(getNumberRate(time));
+    if (game.matterEnabled) game.matter = game.matter.add(getMatterGain(time));
+    else game.number = game.number.add(getNumberRate(time));
     if (game.number.gt(game.highestNumber)) game.highestNumber = game.number;
     if (game.upgrades.includes(2)) {
       for (let i = 0; i < 10; i++) {
@@ -421,6 +435,8 @@
     getNextExponent,
     canUpgrade,
     inChal,
+    getMatterGain,
+    getMatterEffect,
     format,
     formatTime,
     onOff,
