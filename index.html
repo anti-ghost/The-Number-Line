@@ -20,7 +20,8 @@
   <body>
     <div id="app" style="display: none;">
       <h1>Number: {{format(game.number)}}</h1>
-      <p>Your number is increasing by {{format(getNumberRate())}} per second</p>
+      <p v-if="game.matterEnabled">You are gaining {{format(getMatterGain())}} matter per second</p>
+      <p v-else>Your number is increasing by {{format(getNumberRate())}} per second</p>
       <p>
         <button @click="tabs.tab = 0" class="tabButton">
           Compressors
@@ -331,6 +332,24 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <div v-if="tabs.expSubtab == 3">
+          <p>
+            You have {{format(game.matter)}} matter, multiplying number gain by {{format(getMatterEffect(), 3)}}.
+          </p>
+          <p>
+            When you enable production of matter, your number does not increase.
+            Matter resets on Exponentiate and similar.
+          </p>
+          <p>
+            <button @click="game.matterEnabled = !game.matterEnabled" class="exponentButton upgradeButton">
+              {{
+                game.matterEnabled ? "You are gaining " + format(getMatterGain()) + " matter per second." +
+                "Click here to disable matter production." :
+                "Enable matter production to gain " + format(getMatterGain()) + " matter per second."
+              }}
+            </button>
+          </p>
         </div>
       </div>
     </div>
