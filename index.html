@@ -344,7 +344,7 @@
           <p>
             <button @click="game.matterEnabled = !game.matterEnabled" class="exponentButton upgradeButton">
               {{
-                game.matterEnabled ? "You are gaining " + format(getMatterGain()) + " matter per second." +
+                game.matterEnabled ? "You are gaining " + format(getMatterGain()) + " matter per second. " +
                 "Click here to disable matter production." :
                 "Enable matter production to gain " + format(getMatterGain()) + " matter per second."
               }}
