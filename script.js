@@ -321,6 +321,7 @@
     game.highestNumber = D(game.highestNumber);
     for (let i = 0; i < 10; i++) game.compressors[i] = D(game.compressors[i]);
     game.exponents = D(game.exponents);
+    game.matter = D(game.matter);
   }
   
   function reset(obj = newGame) {
