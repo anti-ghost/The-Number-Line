@@ -1,6 +1,7 @@
 (function(global) {
   "use strict";
   
+  // Check if the URL is trusted by The Number Line
   if (
     btoa(location.origin) != "aHR0cHM6Ly9hbnRpLWdob3N0LmdpdGh1Yi5pbw==" &&
     btoa(location.origin) != "aHR0cHM6Ly9yYXcuZ2l0aGFjay5jb20=" &&
@@ -10,17 +11,19 @@
     return;
   }
   
+  // DEBUG is true in development environments, false otherwise
   const DEBUG = true;
   
   const VERSION = "1.2.0";
   
-  const Vue = global.Vue;
+  // Import global variables into function scope
+  const Vue = global.Vue,
+    $ = global.$,
+    D = global.Decimal;
   
-  const $ = global.$;
+  // Variables
   
-  const D = global.Decimal;
-  
-  const game = Vue.reactive({});  
+  const game = Vue.reactive({});
   
   const newGame = {
     debug: DEBUG,
@@ -62,12 +65,24 @@
     chalConf: true,
     expOnChal: true,
     matter: D(0),
-    matterEnabled: false
+    matterEnabled: false,
+    matterUpgrades: [D(0), D(0), D(0)]
   };
   
-  const UPGRADE_COSTS = [D(1), D(2), D(3), D(10), D(20), D(50), D(500), D(10000)];
+  const UPGRADE_COSTS = [
+    D(1),
+    D(2),
+    D(3),
+    D(10),
+    D(20),
+    D(50),
+    D(500),
+    D(10000)
+  ];
   
   const CHALLENGE_GOALS = [D(1e12), D(1e20)];
+  
+  const MATTER_UPGRADE_COSTS = [D(1e5), D(1e3), D(1e9)];
   
   const tabs = Vue.reactive({
     tab: 0,
@@ -75,6 +90,8 @@
   });
   
   let NaNerror = false;
+  
+  // NaN-checking functions
   
   function NaNalert() {
     NaNerror = true;
@@ -92,6 +109,8 @@
     }
     return false;
   }
+  
+  // Functions that do not change the game save
   
   function timePlayed() {
     return Date.now() - game.timeStarted;
@@ -152,6 +171,12 @@
     return x.add(10).log10();
   }
   
+  function getMatterUpgradeCost(x) {
+    return MATTER_UPGRADE_COSTS[x].pow(game.matterUpgrades[x].add(1)).mul(1e30);
+  }
+  
+  // Rendering functions
+  
   function format(number, f = 0) {
     number = D(number);
     if (number.isNaN()) {
@@ -207,6 +232,8 @@
     return x ? "Disable" : "Enable";
   }
   
+  // Buy-max functions
+  
   function buyMax(x) {
     if (!inChal(1) && game.number.lt(1e12 ** (1 + game.chalComp.includes(1) / 9))) {
       const c = D.affordGeometricSeries(
@@ -226,6 +253,8 @@
     } else while (canCompress(x)) compress(x);
   }
   
+  // Soft reset functions
+  
   function resetCompressors() {
     game.number = D(0);
     game.compressors = [
@@ -241,6 +270,8 @@
       D(0)
     ];
   }
+  
+  // Functions executed manually
   
   function compress(x) {
     if (canCompress(x)) {
@@ -292,6 +323,15 @@
     }
   }
   
+  function matterUpgrade(x) {
+    if (game.matter.gte(getMatterUpgradeCost(x))) {
+      game.matter = game.matter.sub(getMatterUpgradeCost(x));
+      game.matterUpgrades[x] = game.matterUpgrades[x].add(1);
+    }
+  }
+  
+  // Game loop functions
+  
   function loop(time) {
     if (!NaNerror && checkNaNs()) NaNalert();
     if (NaNerror) return;
@@ -316,12 +356,16 @@
     }
   }
   
+  // Save-load functions
+  
   function transformSaveToDecimal() {
+    let i;
     game.number = D(game.number);
     game.highestNumber = D(game.highestNumber);
-    for (let i = 0; i < 10; i++) game.compressors[i] = D(game.compressors[i]);
+    for (i = 0; i < 10; i++) game.compressors[i] = D(game.compressors[i]);
     game.exponents = D(game.exponents);
     game.matter = D(game.matter);
+    for (i = 0; i < 3; i++) game.matterUpgrades[i] = D(game.matterUpgrades[i]);
   }
   
   function reset(obj = newGame) {
@@ -407,13 +451,16 @@
     }
   }
   
+  // Define a Vue instance
   const app = Vue.createApp({
     data() {
       return dev;
     }
   });
   
+  // Define the object containing all local variables
   const dev = {
+    Vue,
     $,
     D,
     VERSION,
@@ -423,6 +470,7 @@
     newGame,
     UPGRADE_COSTS,
     CHALLENGE_GOALS,
+    MATTER_UPGRADE_COSTS,
     tabs,
     NaNerror,
     NaNalert,
@@ -438,6 +486,7 @@
     inChal,
     getMatterGain,
     getMatterEffect,
+    getMatterUpgradeCost,
     format,
     formatTime,
     onOff,
@@ -450,6 +499,7 @@
     enableAutobuyers,
     disableAutobuyers,
     enterChal,
+    matterUpgrade,
     loop,
     simulateTime,
     reset,
@@ -463,6 +513,9 @@
     app
   };
   
+  dev.dev = dev;
+  
+  // Export dev and app when in a development environment
   if (DEBUG) {
     global.dev = dev;
     global.app = app;
@@ -470,10 +523,13 @@
   
   load();
   
+  // Export DEBUG and VERSION as read-only variables
   Object.defineProperty(global, "DEBUG", { value: DEBUG });
   Object.defineProperty(global, "VERSION", { value: VERSION });
   
+  // Mount the Vue instance to the #app container
   app.mount("#app");
   
+  // Display the #app container
   document.getElementById("app").style.display = "";
 })(this);
