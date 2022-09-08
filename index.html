@@ -349,6 +349,31 @@
               }}
             </button>
           </p>
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <button @click="matterUpgrade(0)" class="exponentButton upgradeButton">
+                    Increase the base matter multiplier exponent<br />
+                    Currently: {{format(game.matterUpgrades[0].add(10).log10(), 3)}} → {{format(game.matterUpgrades[0].add(11).log10(), 3)}}<br />
+                    Cost: {{format(getMatterUpgradeCost(0))}}
+                  </button>
+                </td>
+                <td>
+                  <button @click="matterUpgrade(1)" class="exponentButton upgradeButton">
+                    Double matter gain<br /><br />
+                    Cost: {{format(getMatterUpgradeCost(1))}}
+                  </button>
+                </td>
+                <td>
+                  <button @click="matterUpgrade(1)" class="exponentButton upgradeButton">
+                    Multiply matter multiplier by 1.2<br /><br />
+                    Cost: {{format(getMatterUpgradeCost(2))}}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
