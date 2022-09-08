@@ -168,7 +168,7 @@
   }
   
   function getMatterEffect(x = game.matter) {
-    return x.add(10).log10();
+    return x.add(10).log10().pow(game.matterUpgrades[0].add(10).log10()).mul(D.pow(1.2, game.matterUpgrades[2]));
   }
   
   function getMatterUpgradeCost(x) {
