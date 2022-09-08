@@ -172,7 +172,7 @@
   }
   
   function getMatterUpgradeCost(x) {
-    return MATTER_UPGRADE_COSTS[x].pow(game.matterUpgrades[x].add(1)).mul(1e30);
+    return MATTER_UPGRADE_COSTS[x].pow(game.matterUpgrades[x]).mul(1e30);
   }
   
   // Rendering functions
