@@ -353,20 +353,32 @@
             <tbody>
               <tr>
                 <td>
-                  <button @click="matterUpgrade(0)" class="exponentButton upgradeButton">
+                  <button 
+                    @click="matterUpgrade(0)" 
+                    class="exponentButton upgradeButton"
+                    :class="game.matter.gte(getMatterUpgradeCost(0)) ? '' : 'locked'"
+                  >
                     Increase the base matter multiplier exponent<br />
                     Currently: {{format(game.matterUpgrades[0].add(10).log10(), 3)}} → {{format(game.matterUpgrades[0].add(11).log10(), 3)}}<br />
                     Cost: {{format(getMatterUpgradeCost(0))}}
                   </button>
                 </td>
                 <td>
-                  <button @click="matterUpgrade(1)" class="exponentButton upgradeButton">
+                  <button 
+                    @click="matterUpgrade(1)" 
+                    class="exponentButton upgradeButton"
+                    :class="game.matter.gte(getMatterUpgradeCost(1)) ? '' : 'locked'"
+                  >
                     Double matter gain<br /><br />
                     Cost: {{format(getMatterUpgradeCost(1))}}
                   </button>
                 </td>
                 <td>
-                  <button @click="matterUpgrade(2)" class="exponentButton upgradeButton">
+                  <button 
+                    @click="matterUpgrade(2)"
+                    class="exponentButton upgradeButton"
+                    :class="game.matter.gte(getMatterUpgradeCost(2)) ? '' : 'locked'"
+                  >
                     Multiply matter multiplier by 1.2<br /><br />
                     Cost: {{format(getMatterUpgradeCost(2))}}
                   </button>
