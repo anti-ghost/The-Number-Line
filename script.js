@@ -164,6 +164,7 @@
   function getMatterGain(t = 1) {
     let rate = getNumberRate(t);
     rate = rate.div(getMatterEffect());
+    rate = rate.mul(D.pow(2, game.upgrades[1]));
     return rate;
   }
   
