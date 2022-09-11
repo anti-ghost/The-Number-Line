@@ -330,6 +330,32 @@
                   </button>
                 </td>
               </tr>
+              <tr>
+                <td>
+                  <button
+                    @click="enterChal(3)"
+                    class="exponentButton challenge"
+                    :class="game.chalComp.includes(3) ? 'bought cursorPointer' : inChal(3) ? 'running' : ''"
+                  >
+                    Challenge 3<br />
+                    ???<br />
+                    Goal: ???<br />
+                    Reward: ???
+                  </button>
+                </td>
+                <td>
+                  <button
+                    @click="enterChal(4)"
+                    class="exponentButton challenge"
+                    :class="game.chalComp.includes(4) ? 'bought cursorPointer' : inChal(4) ? 'running' : ''"
+                  >
+                    Challenge 4<br />
+                    ???<br />
+                    Goal: ???<br />
+                    Reward: ???
+                  </button>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
