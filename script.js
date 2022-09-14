@@ -12,6 +12,7 @@
   }
   
   // DEBUG is true in development environments, false otherwise
+  // Change this to false when deploying for production
   const DEBUG = true;
   
   const VERSION = "1.2.0";
