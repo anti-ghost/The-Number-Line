@@ -347,7 +347,7 @@
     }
   }
   
-  function simulateTime(ms) {
+  function simulateTime(ms, l = false) {
     if (NaNerror) return;
     game.debug = DEBUG;
     game.version = VERSION;
@@ -356,6 +356,7 @@
     for (let i = 0; i < 10; i++) {
       loop(ms / 10000);
     }
+    if (l) setTimeout(() => simulateTime(Date.now() - game.lastTick, true));
   }
   
   // Save-load functions
@@ -389,9 +390,9 @@
     game.version = VERSION;
     transformSaveToDecimal();
     const diff = Date.now() - game.lastTick;
-    console.log(diff);
+    if (DEBUG) console.log(diff);
     if (game.offlineProg) {
-      simulateTime(diff, true);
+      simulateTime(diff);
     }
   }
   
@@ -412,7 +413,7 @@
     if (localStorage.getItem(DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave") !== null) {
       loadGame(JSON.parse(atob(localStorage.getItem(DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave"))));
     }
-    setInterval(() => simulateTime(Date.now() - game.lastTick), 0);
+    simulateTime(Date.now() - game.lastTick(), true);
     setInterval(() => save(), 5000);
   }
   
