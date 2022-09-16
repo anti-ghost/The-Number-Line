@@ -155,7 +155,7 @@
   }
   
   function canUpgrade(x) {
-    return (x == 1 || game.upgrades.includes(x - 2)) && game.exponents.gte(UPGRADE_COSTS[x - 1]);
+    return (x == 1 || game.upgrades.includes(x - 1)) && game.exponents.gte(UPGRADE_COSTS[x - 1]);
   }
   
   function inChal(x) {
