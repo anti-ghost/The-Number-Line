@@ -413,7 +413,7 @@
     if (localStorage.getItem(DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave") !== null) {
       loadGame(JSON.parse(atob(localStorage.getItem(DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave"))));
     }
-    simulateTime(Date.now() - game.lastTick(), true);
+    simulateTime(Date.now() - game.lastTick, true);
     setInterval(() => save(), 5000);
   }
   
