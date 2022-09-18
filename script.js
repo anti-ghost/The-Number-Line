@@ -81,7 +81,7 @@
     D(10000)
   ];
   
-  const CHALLENGE_GOALS = [D(1e12), D(1e20)];
+  const CHALLENGE_GOALS = [D(1e12), D(1e20), D(1e16)];
   
   const MATTER_UPGRADE_COSTS = [D(1e5), D(1e3), D(1e9)];
   
@@ -139,7 +139,8 @@
     if (inChal(1)) e = e.add(12);
     if (e.gt(12)) e = D.pow10(e.div(12).sub(1)).mul(12).div(D.ln(10)).add(12).sub(D.div(12, D.ln(10)));
     if (inChal(1)) e = e.sub(12);
-    return D.pow10(e);
+    if (inChal(3)) e = e.mul(D.pow(2, game.compressors.reduce((a, b) => a.add(b)).sub(game.compressors[x - 1])));
+    return D.pow10(e).div(game.chalComp.includes(3) ? getMatterEffect() : 1);
   }
   
   function canCompress(x) {
@@ -237,17 +238,17 @@
   // Buy-max functions
   
   function buyMax(x) {
-    if (!inChal(1) && game.number.lt(1e12 ** (1 + game.chalComp.includes(1) / 9))) {
+    if (!inChal(1) && !inChal(3) && game.number.lt(1e12 ** (1 + game.chalComp.includes(1) / 9))) {
       const c = D.affordGeometricSeries(
         game.number,
-        10 ** (x / (1 + game.chalComp.includes(1) / 9)),
-        10 ** (x / (1 + game.chalComp.includes(1) / 9)),
+        D.pow10(x / (1 + game.chalComp.includes(1) / 9)).div(game.chalComp.includes(3) ? getMatterGain() : 1),
+        D.pow10(x / (1 + game.chalComp.includes(1) / 9)),
         game.compressors[x - 1]
       ),
         n = D.sumGeometricSeries(
           c,
-          10 ** (x / (1 + game.chalComp.includes(1) / 9)),
-          10 ** (x / (1 + game.chalComp.includes(1) / 9)),
+          D.pow10(x / (1 + game.chalComp.includes(1) / 9)).div(game.chalComp.includes(3) ? getMatterGain() : 1),
+          D.pow10(x / (1 + game.chalComp.includes(1) / 9)),
           game.compressors[x - 1]
         );
       game.compressors[x - 1] = game.compressors[x - 1].add(c);
