@@ -338,9 +338,9 @@
                     :class="game.chalComp.includes(3) ? 'bought cursorPointer' : inChal(3) ? 'running' : ''"
                   >
                     Challenge 3<br />
-                    ???<br />
-                    Goal: ???<br />
-                    Reward: ???
+                    Each Compressor you buy increases the costs of the others.<br />
+                    Goal: 1.000e16<br />
+                    Reward: The Matter multiplier divides compressor costs
                   </button>
                 </td>
                 <td>
@@ -350,7 +350,7 @@
                     :class="game.chalComp.includes(4) ? 'bought cursorPointer' : inChal(4) ? 'running' : ''"
                   >
                     Challenge 4<br />
-                    ???<br />
+                    Base Compressor multiplier is x1.<br />
                     Goal: ???<br />
                     Reward: ???
                   </button>
@@ -380,7 +380,7 @@
               <tr>
                 <td>
                   <button 
-                    @click="matterUpgrade(0)" 
+                    @click="matterUpgrade(0)"
                     class="exponentButton upgradeButton"
                     :class="game.matter.gte(getMatterUpgradeCost(0)) ? '' : 'locked'"
                   >
@@ -391,7 +391,7 @@
                 </td>
                 <td>
                   <button 
-                    @click="matterUpgrade(1)" 
+                    @click="matterUpgrade(1)"
                     class="exponentButton upgradeButton"
                     :class="game.matter.gte(getMatterUpgradeCost(1)) ? '' : 'locked'"
                   >
