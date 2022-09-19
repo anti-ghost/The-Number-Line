@@ -276,6 +276,50 @@
                   </button>
                 </td>
               </tr>
+              <tr>
+                <td>
+                  <button 
+                    @click="upgrade(9)"
+                    class="exponentButton upgradeButton"
+                    :class="inChal(2) ? 'locked' : game.upgrades.includes(9) ? 'bought' : canUpgrade(9) ? '' : 'locked'"
+                  >
+                    Gain a free compressor each<br /><br />
+                    Cost: 1.000e6 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(10)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(10) ? 'bought' : canUpgrade(11) ? '' : 'locked'"
+                  >
+                    Number gain is boosted by your number<br />
+                    Currently: x{{format(game.number.add(10).log10(), 3)}}<br />
+                    Cost: 50 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(11)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(11) ? 'bought' : canUpgrade(11) ? '' : 'locked'"
+                  >
+                    Number gain is boosted by total time played<br />
+                    Currently: x{{format(D.pow(timePlayed() / 1000, 0.2), 3)}}<br />
+                    Cost: 500 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(12)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(12) ? 'bought' : canUpgrade(12) ? '' : 'locked'"
+                  >
+                    ???<br /><br>
+                    ???
+                  </button>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
