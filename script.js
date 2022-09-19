@@ -242,13 +242,13 @@
     if (!inChal(1) && !inChal(3) && game.number.lt(1e12 ** (1 + game.chalComp.includes(1) / 9))) {
       const c = D.affordGeometricSeries(
         game.number,
-        D.pow10(x / (1 + game.chalComp.includes(1) / 9)).div(game.chalComp.includes(3) ? getMatterGain() : 1),
+        D.pow10(x / (1 + game.chalComp.includes(1) / 9)).div(game.chalComp.includes(3) ? getMatterEffect() : 1),
         D.pow10(x / (1 + game.chalComp.includes(1) / 9)),
         game.compressors[x - 1]
       ),
         n = D.sumGeometricSeries(
           c,
-          D.pow10(x / (1 + game.chalComp.includes(1) / 9)).div(game.chalComp.includes(3) ? getMatterGain() : 1),
+          D.pow10(x / (1 + game.chalComp.includes(1) / 9)).div(game.chalComp.includes(3) ? getMatterEffect() : 1),
           D.pow10(x / (1 + game.chalComp.includes(1) / 9)),
           game.compressors[x - 1]
         );
