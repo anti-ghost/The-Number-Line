@@ -78,7 +78,8 @@
     D(20),
     D(50),
     D(500),
-    D(10000)
+    D(10000),
+    D(1e6)
   ];
   
   const CHALLENGE_GOALS = [D(1e12), D(1e20), D(1e16)];
@@ -118,7 +119,7 @@
   }
   
   function getNumberRate(t = 1) {
-    let rate = D.pow(getCompressorBase(), game.compressors.reduce((x, y) => x.add(y)));
+    let rate = D.pow(getCompressorBase(), game.compressors.reduce((x, y) => x.add(y)).add(10 * game.upgrades.includes(10)));
     if (!inChal(2) && game.upgrades.includes(1)) rate = rate.mul(game.compressors.reduce((x, y) => x.add(y)).add(1));
     if (game.upgrades.includes(3)) rate = rate.mul(game.exponents.add(1).sqrt());
     if (game.upgrades.includes(6)) rate = rate.mul(game.number.add(10).log10());
