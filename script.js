@@ -141,7 +141,7 @@
     if (e.gt(12)) e = D.pow10(e.div(12).sub(1)).mul(12).div(D.ln(10)).add(12).sub(D.div(12, D.ln(10)));
     if (inChal(1)) e = e.sub(12);
     if (inChal(3)) e = e.mul(D.pow(2, game.compressors.reduce((a, b) => a.add(b)).sub(game.compressors[x - 1])));
-    if (game.chalComp.includes(3)) e = e.sub(game.matter.log10().div(10));
+    if (game.chalComp.includes(3)) e = e.sub(game.matter.log10().div(5));
     return D.pow10(e);
   }
   
@@ -243,13 +243,13 @@
     if (!inChal(1) && !inChal(3) && game.number.lt(1e12 ** (1 + game.chalComp.includes(1) / 9))) {
       const c = D.affordGeometricSeries(
         game.number,
-        D.pow10(x / (1 + game.chalComp.includes(1) / 9)).div(game.chalComp.includes(3) ? game.matter.root(10) : 1),
+        D.pow10(x / (1 + game.chalComp.includes(1) / 9)).div(game.chalComp.includes(3) ? game.matter.root(5) : 1),
         D.pow10(x / (1 + game.chalComp.includes(1) / 9)),
         game.compressors[x - 1]
       ),
         n = D.sumGeometricSeries(
           c,
-          D.pow10(x / (1 + game.chalComp.includes(1) / 9)).div(game.chalComp.includes(3) ? game.matter.root(10) : 1),
+          D.pow10(x / (1 + game.chalComp.includes(1) / 9)).div(game.chalComp.includes(3) ? game.matter.root(5) : 1),
           D.pow10(x / (1 + game.chalComp.includes(1) / 9)),
           game.compressors[x - 1]
         );
