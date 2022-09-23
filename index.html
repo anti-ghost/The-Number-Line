@@ -51,7 +51,7 @@
                 <button @click="compress(2)" class="upgradeButton" :class="canCompress(2) ? '' : 'locked'">
                   Compress the number line by {{format(getCompressorBase())}}x<br />
                   Cost: {{format(getCompressCost(2))}}<br />
-                  Amount: {{format(game.compressors[1])}} {{!inChal(2) && {game.upgrades.includes(9) ? "+1" : ""}}
+                  Amount: {{format(game.compressors[1])}} {{!inChal(2) && game.upgrades.includes(9) ? "+1" : ""}}
                 </button>
               </td>
             </tr>
