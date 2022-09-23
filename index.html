@@ -196,7 +196,7 @@
                     :class="inChal(2) ? 'locked' : game.upgrades.includes(1) ? 'bought' : canUpgrade(1) ? '' : 'locked'"
                   >
                     Number gain is boosted by the total number of Compressors<br />
-                    Currently: x{{format(game.compressors.reduce((x, y) => x.add(y)).add(1))}}<br />
+                    Currently: x{{format(getTotalCompressors().add(1))}}<br />
                     Cost: 1 Exponent
                   </button>
                 </td>
@@ -294,7 +294,7 @@
                     :class="game.upgrades.includes(10) ? 'bought' : canUpgrade(11) ? '' : 'locked'"
                   >
                     Compressors boost themselves<br />
-                    Currently: x{{format(game.compressors.reduce((x, y) => x.add(y)).add(1).log10().add(10).log10(), 3)}}<br />
+                    Currently: x{{format(getTotalCompressors().add(1).log10().add(10).log10(), 3)}}<br />
                     Cost: 1.000e7 Exponents
                   </button>
                 </td>
