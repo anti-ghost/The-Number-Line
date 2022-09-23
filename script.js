@@ -120,8 +120,8 @@
   }
   
   function getNumberRate(t = 1) {
-    let rate = D.pow(getCompressorBase(), game.compressors.reduce((x, y) => x.add(y)).add(10 * (!inChal(2) && game.upgrades.includes(9))));
-    if (!inChal(2) && game.upgrades.includes(1)) rate = rate.mul(game.compressors.reduce((x, y) => x.add(y)).add(1));
+    let rate = D.pow(getCompressorBase(), getTotalCompressors().add(10 * (!inChal(2) && game.upgrades.includes(9))));
+    if (!inChal(2) && game.upgrades.includes(1)) rate = rate.mul(getTotalCompressors().add(1));
     if (game.upgrades.includes(3)) rate = rate.mul(game.exponents.add(1).sqrt());
     if (game.upgrades.includes(6)) rate = rate.mul(game.number.add(10).log10());
     if (game.upgrades.includes(7)) rate = rate.mul(D.pow(timePlayed() / 1000, 0.2));
@@ -132,7 +132,7 @@
   function getCompressorBase() {
     let b = inChal(1) ? D(4): D(2);
     if (!inChal(2) && game.upgrades.includes(5)) b = b.mul(1.1);
-    if (game.upgrades.includes(10)) b = b.mul(game.compressors.reduce((x, y) => x.add(y)).add(1).log10().add(10).log10());
+    if (game.upgrades.includes(10)) b = b.mul(getTotalCompressors().add(1).log10().add(10).log10());
     return b;
   }
   
@@ -142,13 +142,17 @@
     if (inChal(1)) e = e.add(12);
     if (e.gt(12)) e = D.pow10(e.div(12).sub(1)).mul(12).div(D.ln(10)).add(12).sub(D.div(12, D.ln(10)));
     if (inChal(1)) e = e.sub(12);
-    if (inChal(3)) e = e.mul(D.pow(2, game.compressors.reduce((a, b) => a.add(b)).sub(game.compressors[x - 1])));
+    if (inChal(3)) e = e.mul(D.pow(2, getTotalCompressors().sub(game.compressors[x - 1])));
     if (game.chalComp.includes(3)) e = e.sub(game.matter.log10().div(5));
     return D.pow10(e);
   }
   
   function canCompress(x) {
     return game.number.gte(getCompressCost(x));
+  }
+  
+  function getTotalCompressors() {
+    return game.compressors.reduce((x, y) => x.add(y));
   }
   
   function getExponentGain(x = game.number) {
@@ -488,6 +492,7 @@
     getCompressorBase,
     getCompressCost,
     canCompress,
+    getTotalCompressors,
     getExponentGain,
     getNextExponent,
     canUpgrade,
