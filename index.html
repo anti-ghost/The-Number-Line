@@ -291,7 +291,7 @@
                   <button 
                     @click="upgrade(10)"
                     class="exponentButton upgradeButton"
-                    :class="game.upgrades.includes(10) ? 'bought' : canUpgrade(11) ? '' : 'locked'"
+                    :class="game.upgrades.includes(10) ? 'bought' : canUpgrade(10) ? '' : 'locked'"
                   >
                     Compressors boost themselves<br />
                     Currently: x{{format(getTotalCompressors().add(1).log10().add(10).log10(), 3)}}<br />
