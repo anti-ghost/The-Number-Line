@@ -130,7 +130,9 @@
   }
   
   function getCompressorBase() {
-    let b = inChal(1) ? D(4): D(2);
+    let b = D(2);
+    if (inChal(1)) b = b.mul(2);
+    if (inChal(4)) b = b.div(2);
     if (!inChal(2) && game.upgrades.includes(5)) b = b.mul(1.1);
     if (game.upgrades.includes(10)) b = b.mul(getTotalCompressors().add(1).log10().add(10).log10());
     return b;
