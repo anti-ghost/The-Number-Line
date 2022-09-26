@@ -138,9 +138,15 @@
     return b;
   }
   
+  function getCompressorScaling() {
+    let s = D(1);
+    if (game.chalComp.includes(1)) s = s.div(0.9);
+    if (game.chalComp.includes(4)) s = s.mul(game.exponents.add(1).log10().add(10).log10());
+    return s;
+  }
+  
   function getCompressCost(x) {
-    let e = game.compressors[x - 1].add(1).mul(x);
-    if (game.chalComp.includes(1)) e = e.mul(0.9);
+    let e = game.compressors[x - 1].add(1).mul(x).div(getCompressorScaling());
     if (inChal(1)) e = e.add(12);
     if (e.gt(12)) e = D.pow10(e.div(12).sub(1)).mul(12).div(D.ln(10)).add(12).sub(D.div(12, D.ln(10)));
     if (inChal(1)) e = e.sub(12);
@@ -248,17 +254,17 @@
   // Buy-max functions
   
   function buyMax(x) {
-    if (!inChal(1) && !inChal(3) && game.number.lt(1e12 ** (1 + game.chalComp.includes(1) / 9))) {
+    if (!inChal(1) && !inChal(3) && game.number.lte(D.pow(1e12, getCompressorScaling()))) {
       const c = D.affordGeometricSeries(
         game.number,
-        D.pow10(x / (1 + game.chalComp.includes(1) / 9)).div(game.chalComp.includes(3) ? game.matter.root(5) : 1),
-        D.pow10(x / (1 + game.chalComp.includes(1) / 9)),
+        D.pow10(getCompressorScaling().mul(x)).div(game.chalComp.includes(3) ? game.matter.root(5) : 1),
+        D.pow10(getCompressorScaling().mul(x)),
         game.compressors[x - 1]
       ),
         n = D.sumGeometricSeries(
           c,
-          D.pow10(x / (1 + game.chalComp.includes(1) / 9)).div(game.chalComp.includes(3) ? game.matter.root(5) : 1),
-          D.pow10(x / (1 + game.chalComp.includes(1) / 9)),
+          D.pow10(getCompressorScaling().mul(x)).div(game.chalComp.includes(3) ? game.matter.root(5) : 1),
+          D.pow10(getCompressorScaling().mul(x)),
           game.compressors[x - 1]
         );
       game.compressors[x - 1] = game.compressors[x - 1].add(c);
@@ -358,7 +364,7 @@
     }
   }
   
-  function simulateTime(ms, l = false) {
+  function simulateTime(ms) {
     if (NaNerror) return;
     game.debug = DEBUG;
     game.version = VERSION;
@@ -367,11 +373,12 @@
     for (let i = 0; i < 10; i++) {
       loop(ms / 10000);
     }
-    if (l) setTimeout(() => simulateTime(Date.now() - game.lastTick, true));
+    return Date.now() - game.lastTick;
   }
   
   // Save-load functions
   
+  // Transform the game save to Decimal
   function transformSaveToDecimal() {
     let i;
     game.number = D(game.number);
@@ -389,6 +396,7 @@
   }
   
   function loadGame(loadgame) {
+    // Prevent loading a development save into the main game
     if (loadgame.debug && !DEBUG) {
       $.notify("Import failed, attempted to load development save into the main game.", "error");
       return;
@@ -403,11 +411,12 @@
     const diff = Date.now() - game.lastTick;
     if (DEBUG) console.log(diff);
     if (game.offlineProg) {
-      simulateTime(diff);
+      simulateTime(diff, true);
     }
   }
   
   function save(auto = false) {
+    // Prevent saving of games that contain NaNs
     if (NaNerror) {
       if (auto) $.notify("Save failed, attempted to save a broken game", "error");
       return;
@@ -424,7 +433,7 @@
     if (localStorage.getItem(DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave") !== null) {
       loadGame(JSON.parse(atob(localStorage.getItem(DEBUG ? "TheNumberLineDevSave-v" + VERSION : "TheNumberLineSave"))));
     }
-    simulateTime(Date.now() - game.lastTick, true);
+    setInterval(() => simulateTime(Date.now() - game.lastTick));
     setInterval(() => save(), 5000);
   }
   
@@ -492,6 +501,7 @@
     timePlayed,
     getNumberRate,
     getCompressorBase,
+    getCompressorScaling,
     getCompressCost,
     canCompress,
     getTotalCompressors,
