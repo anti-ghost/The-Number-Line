@@ -80,7 +80,9 @@
     D(500),
     D(10000),
     D(1e6),
-    D(1e7)
+    D(1e7),
+    D(1e8),
+    D(Infinity)
   ];
   
   const CHALLENGE_GOALS = [D(1e12), D(1e20), D(1e16), D(1e18)];
@@ -135,6 +137,7 @@
     if (inChal(4)) b = b.div(2);
     if (!inChal(2) && game.upgrades.includes(5)) b = b.mul(1.1);
     if (game.upgrades.includes(10)) b = b.mul(getTotalCompressors().add(1).log10().add(10).log10());
+    if (game.upgrades.includes(11)) b = b.mul(getMatterEffect().log10().add(1).root(10));
     return b;
   }
   
