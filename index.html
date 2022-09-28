@@ -304,9 +304,9 @@
                     class="exponentButton upgradeButton"
                     :class="game.upgrades.includes(11) ? 'bought' : canUpgrade(11) ? '' : 'locked'"
                   >
-                    Number gain is boosted by total time played<br />
-                    Currently: x{{format(D.pow(timePlayed() / 1000, 0.2), 3)}}<br />
-                    Cost: 500 Exponents
+                    The Matter multiplier gives a boost to the Compressor multiplier<br />
+                    Currently: x{{format(getMatterEffect().log10().add(1).root(10), 3)}}<br />
+                    Cost: 1.000e8 Exponents
                   </button>
                 </td>
                 <td>
