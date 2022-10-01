@@ -44,6 +44,9 @@ This is a list of changes for The Number Line.
 * Added 4 more exponent upgrades
 * Some styling changes
 * Multiple bug fixes
+#### v1.1.1 (September 13, 2022)
+* Fixed a bug when buying exponent upgrades
+* Fixed spacing in the How to Play and Changelog pages
 ### v1.2.0 – The Matter Update (September 30, 2022)
 * Added Matter
 * Added 2 more challenges
