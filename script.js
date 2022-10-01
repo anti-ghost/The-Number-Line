@@ -15,7 +15,7 @@
   // Change this to false when deploying for production
   const DEBUG = true;
   
-  const VERSION = "1.2.0";
+  const VERSION = "1.3.0";
   
   // Import global variables into function scope
   const Vue = global.Vue,
