@@ -24,6 +24,10 @@ You may enable or disable each autobuyer individually.
 When you enter a challenge, you must reach the required number under certain restrictions to complete it.
 Completing challenges will give boosts to your production.
 You can exit a challenge if you don’t think you are able to complete the challenge.
+### Matter
+When you enable Matter production, your number does not increase, but you gain matter based on your number rate.
+Matter gives a boost to Number gain based on its amount. The boost is log<sub>10</sub>(matter+10).
+Matter can be spent on Matter Upgrades which give matter-related effects.
 # Changelog
 This is a list of changes for The Number Line.
 ## v0.0.0 – Initial Development
@@ -43,3 +47,6 @@ This is a list of changes for The Number Line.
 #### v1.1.1 (September 13, 2022)
 * Fixed a bug when buying exponent upgrades
 * Fixed spacing in the How to Play and Changelog pages
+### v1.2.0 – The Matter Update (September 30, 2022)
+* Added Matter
+* Added 2 more challenges

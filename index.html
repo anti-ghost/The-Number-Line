@@ -20,7 +20,8 @@
   <body>
     <div id="app" style="display: none;">
       <h1>Number: {{format(game.number)}}</h1>
-      <p>Your number is increasing by {{format(getNumberRate())}} per second</p>
+      <p v-if="game.matterEnabled">You are gaining {{format(getMatterGain())}} matter per second</p>
+      <p v-else>Your number is increasing by {{format(getNumberRate())}} per second</p>
       <p>
         <button @click="tabs.tab = 0" class="tabButton">
           Compressors
@@ -43,14 +44,14 @@
                 <button @click="compress(1)" class="upgradeButton" :class="canCompress(1) ? '' : 'locked'">
                   Compress the number line by {{format(getCompressorBase())}}x<br />
                   Cost: {{format(getCompressCost(1))}}<br />
-                  Amount: {{format(game.compressors[0])}}
+                  Amount: {{format(game.compressors[0])}} {{!inChal(2) && game.upgrades.includes(9) ? "+1" : ""}}
                 </button>
               </td>
               <td>
                 <button @click="compress(2)" class="upgradeButton" :class="canCompress(2) ? '' : 'locked'">
                   Compress the number line by {{format(getCompressorBase())}}x<br />
                   Cost: {{format(getCompressCost(2))}}<br />
-                  Amount: {{format(game.compressors[1])}}
+                  Amount: {{format(game.compressors[1])}} {{!inChal(2) && game.upgrades.includes(9) ? "+1" : ""}}
                 </button>
               </td>
             </tr>
@@ -59,14 +60,14 @@
                 <button @click="compress(3)" class="upgradeButton" :class="canCompress(3) ? '' : 'locked'">
                   Compress the number line by {{format(getCompressorBase())}}x<br />
                   Cost: {{format(getCompressCost(3))}}<br />
-                  Amount: {{format(game.compressors[2])}}
+                  Amount: {{format(game.compressors[2])}} {{!inChal(2) && game.upgrades.includes(9) ? "+1" : ""}}
                 </button>
               </td>
               <td>
                 <button @click="compress(4)" class="upgradeButton" :class="canCompress(4) ? '' : 'locked'">
                   Compress the number line by {{format(getCompressorBase())}}x<br />
                   Cost: {{format(getCompressCost(4))}}<br />
-                  Amount: {{format(game.compressors[3])}}
+                  Amount: {{format(game.compressors[3])}} {{!inChal(2) && game.upgrades.includes(9) ? "+1" : ""}}
                 </button>
               </td>
             </tr>
@@ -75,14 +76,14 @@
                 <button @click="compress(5)" class="upgradeButton" :class="canCompress(5) ? '' : 'locked'">
                   Compress the number line by {{format(getCompressorBase())}}x<br />
                   Cost: {{format(getCompressCost(5))}}<br />
-                  Amount: {{format(game.compressors[4])}}
+                  Amount: {{format(game.compressors[4])}} {{!inChal(2) && game.upgrades.includes(9) ? "+1" : ""}}
                 </button>
               </td>
               <td>
                 <button @click="compress(6)" class="upgradeButton" :class="canCompress(6) ? '' : 'locked'">
                   Compress the number line by {{format(getCompressorBase())}}x<br />
                   Cost: {{format(getCompressCost(6))}}<br />
-                  Amount: {{format(game.compressors[5])}}
+                  Amount: {{format(game.compressors[5])}} {{!inChal(2) && game.upgrades.includes(9) ? "+1" : ""}}
                 </button>
               </td>
             </tr>
@@ -91,14 +92,14 @@
                 <button @click="compress(7)" class="upgradeButton" :class="canCompress(7) ? '' : 'locked'">
                   Compress the number line by {{format(getCompressorBase())}}x<br />
                   Cost: {{format(getCompressCost(7))}}<br />
-                  Amount: {{format(game.compressors[6])}}
+                  Amount: {{format(game.compressors[6])}} {{!inChal(2) && game.upgrades.includes(9) ? "+1" : ""}}
                 </button>
               </td>
               <td>
                 <button @click="compress(8)" class="upgradeButton" :class="canCompress(8) ? '' : 'locked'">
                   Compress the number line by {{format(getCompressorBase())}}x<br />
                   Cost: {{format(getCompressCost(8))}}<br />
-                  Amount: {{format(game.compressors[7])}}
+                  Amount: {{format(game.compressors[7])}} {{!inChal(2) && game.upgrades.includes(9) ? "+1" : ""}}
                 </button>
               </td>
             </tr>
@@ -107,14 +108,14 @@
                 <button @click="compress(9)" class="upgradeButton" :class="canCompress(9) ? '' : 'locked'">
                   Compress the number line by {{format(getCompressorBase())}}x<br />
                   Cost: {{format(getCompressCost(9))}}<br />
-                  Amount: {{format(game.compressors[8])}}
+                  Amount: {{format(game.compressors[8])}} {{!inChal(2) && game.upgrades.includes(9) ? "+1" : ""}}
                 </button>
               </td>
               <td>
                 <button @click="compress(10)" class="upgradeButton" :class="canCompress(10) ? '' : 'locked'">
                   Compress the number line by {{format(getCompressorBase())}}x<br />
                   Cost: {{format(getCompressCost(10))}}<br />
-                  Amount: {{format(game.compressors[9])}}
+                  Amount: {{format(game.compressors[9])}} {{!inChal(2) && game.upgrades.includes(9) ? "+1" : ""}}
                 </button>
               </td>
             </tr>
@@ -145,8 +146,8 @@
         <p>
           <small>
             <i>
-              Current version: 1.1.1<br />
-              Last updated: September 13, 2022<br />
+              Current version: 1.2.0<br />
+              Last updated: September 30, 2022<br />
               © 2022 <a href="https://github.com/anti-ghost">resu deteleD</a><br />
               This work is licensed under the <a href="https://opensource.org/licenses/MIT">MIT License</a>
             </i>
@@ -180,6 +181,8 @@
             Autobuyers
           </button>&nbsp;<button @click="tabs.expSubtab = 2" v-if="game.upgrades.includes(4)" class="exponentButton">
             Challenges
+          </button>&nbsp;<button @click="tabs.expSubtab = 3" v-if="game.upgrades.includes(8)" class="exponentButton">
+            Matter
           </button>
         </p>
         <div v-if="tabs.expSubtab == 0">
@@ -193,7 +196,7 @@
                     :class="inChal(2) ? 'locked' : game.upgrades.includes(1) ? 'bought' : canUpgrade(1) ? '' : 'locked'"
                   >
                     Number gain is boosted by the total number of Compressors<br />
-                    Currently: x{{format(game.compressors.reduce((x, y) => x.add(y)).add(1))}}<br />
+                    Currently: x{{format(getTotalCompressors().add(1))}}<br />
                     Cost: 1 Exponent
                   </button>
                 </td>
@@ -263,8 +266,56 @@
                   </button>
                 </td>
                 <td>
-                  <button class="exponentButton upgradeButton locked">
-                    ???<br /><br />
+                  <button 
+                    @click="upgrade(8)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(8) ? 'bought' : canUpgrade(8) ? '' : 'locked'"
+                  >
+                    Unlock Matter<br /><br />
+                    Need 10000 Exponents
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <button 
+                    @click="upgrade(9)"
+                    class="exponentButton upgradeButton"
+                    :class="inChal(2) ? 'locked' : game.upgrades.includes(9) ? 'bought' : canUpgrade(9) ? '' : 'locked'"
+                  >
+                    Gain a free compressor each<br /><br />
+                    Cost: 1.000e6 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(10)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(10) ? 'bought' : canUpgrade(10) ? '' : 'locked'"
+                  >
+                    Compressors boost themselves<br />
+                    Currently: x{{format(getTotalCompressors().add(1).log10().add(10).log10(), 3)}}<br />
+                    Cost: 1.000e7 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(11)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(11) ? 'bought' : canUpgrade(11) ? '' : 'locked'"
+                  >
+                    The Matter multiplier gives a boost to Compressors<br />
+                    Currently: x{{format(getMatterEffect().log10().add(1).root(10), 3)}}<br />
+                    Cost: 1.000e8 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(12)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(12) ? 'bought' : canUpgrade(12) ? '' : 'locked'"
+                  >
+                    ???<br /><br>
                     ???
                   </button>
                 </td>
@@ -320,6 +371,86 @@
                     The first column of exponent upgrades is disabled.<br />
                     Goal: 1.000e20<br />
                     Reward: The Exponent formula is improved (<var>x</var><sup>1/12</sup> → <var>x</var><sup>1/10</sup>)
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <button
+                    @click="enterChal(3)"
+                    class="exponentButton challenge"
+                    :class="game.chalComp.includes(3) ? 'bought cursorPointer' : inChal(3) ? 'running' : ''"
+                  >
+                    Challenge 3<br />
+                    Each Compressor you buy increases the costs of the others.<br />
+                    Goal: 1.000e16<br />
+                    Reward: Matter divides compressor costs (Currently: /{{format(game.matter.root(5))}})
+                  </button>
+                </td>
+                <td>
+                  <button
+                    @click="enterChal(4)"
+                    class="exponentButton challenge"
+                    :class="game.chalComp.includes(4) ? 'bought cursorPointer' : inChal(4) ? 'running' : ''"
+                  >
+                    Challenge 4<br />
+                    Base Compressor multiplier is x1.<br />
+                    Goal: 1.000e18<br />
+                    Reward: Exponents reduce compressor scaling (Currently: /{{format(game.exponents.add(1).log10().add(10).log10(), 3)}})
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div v-if="tabs.expSubtab == 3">
+          <p>
+            You have {{format(game.matter)}} matter, multiplying number gain by {{format(getMatterEffect(), 3)}}.
+          </p>
+          <p>
+            When you enable production of matter, your number does not increase.
+          </p>
+          <p>
+            <button @click="game.matterEnabled = !game.matterEnabled" class="exponentButton upgradeButton">
+              {{
+                game.matterEnabled ? "You are gaining " + format(getMatterGain()) + " matter per second. " +
+                "Click here to disable matter production." :
+                "Enable matter production to gain " + format(getMatterGain()) + " matter per second."
+              }}
+            </button>
+          </p>
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <button 
+                    @click="matterUpgrade(0)"
+                    class="exponentButton upgradeButton"
+                    :class="game.matter.gte(getMatterUpgradeCost(0)) ? '' : 'locked'"
+                  >
+                    Increase the base matter multiplier exponent<br />
+                    Currently: {{format(game.matterUpgrades[0].add(10).log10(), 3)}} → {{format(game.matterUpgrades[0].add(11).log10(), 3)}}<br />
+                    Cost: {{format(getMatterUpgradeCost(0))}}
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="matterUpgrade(1)"
+                    class="exponentButton upgradeButton"
+                    :class="game.matter.gte(getMatterUpgradeCost(1)) ? '' : 'locked'"
+                  >
+                    Double matter gain<br /><br />
+                    Cost: {{format(getMatterUpgradeCost(1))}}
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="matterUpgrade(2)"
+                    class="exponentButton upgradeButton"
+                    :class="game.matter.gte(getMatterUpgradeCost(2)) ? '' : 'locked'"
+                  >
+                    Multiply matter multiplier by 1.2<br /><br />
+                    Cost: {{format(getMatterUpgradeCost(2))}}
                   </button>
                 </td>
               </tr>
