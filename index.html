@@ -146,7 +146,7 @@
         <p>
           <small>
             <i>
-              Current version: 1.2.0<br />
+              Current version: 1.3.0<br />
               Last updated: September 30, 2022<br />
               © 2022 <a href="https://github.com/anti-ghost">resu deteleD</a><br />
               This work is licensed under the <a href="https://opensource.org/licenses/MIT">MIT License</a>
@@ -315,8 +315,8 @@
                     class="exponentButton upgradeButton"
                     :class="game.upgrades.includes(12) ? 'bought' : canUpgrade(12) ? '' : 'locked'"
                   >
-                    ???<br /><br>
-                    ???
+                    Unlock the black hole<br /><br>
+                    Need 1.000e9 Exponents
                   </button>
                 </td>
               </tr>
@@ -456,6 +456,17 @@
               </tr>
             </tbody>
           </table>
+          <div v-if="game.upgrades.includes(12)">
+            <p>
+              Your black hole level is {{format(game.blackHole)}}, reducing compressor scaling by {{format(getBlackHoleEffect(), 3)}}.
+            </p>
+            <p>
+              <button @click="upgradeBlackHole()" class="exponentButton upgradeButton" :class="canBlackHole() ? '' : 'locked'">
+                Reset matter for a black hole level<br />
+                Need: {{format(getBlackHoleCost())}}x matter multiplier
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     </div>
