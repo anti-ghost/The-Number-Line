@@ -146,6 +146,7 @@
     let s = D(1);
     if (game.chalComp.includes(1)) s = s.div(0.9);
     if (game.chalComp.includes(4)) s = s.mul(game.exponents.add(1).log10().add(10).log10());
+    if (game.upgrades.includes(12)) s = s.mul(getBlackHoleEffect());
     return s;
   }
   
