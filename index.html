@@ -461,7 +461,7 @@
               Your black hole level is {{format(game.blackHole)}}, reducing compressor scaling by {{format(getBlackHoleEffect(), 3)}}.
             </p>
             <p>
-              <button @click="upgradeBlackHole()" class="exponentButton upgradeButton" :class="canBlackHole() ? '' : 'locked'">
+              <button @click="upgradeBlackHole()" class="exponentButton upgradeButton" :class="getMatterEffect().gte(getBlackHoleCost()) ? '' : 'locked'">
                 Reset matter for a black hole level<br />
                 Need: {{format(getBlackHoleCost())}}x matter multiplier
               </button>
