@@ -67,7 +67,8 @@
     expOnChal: true,
     matter: D(0),
     matterEnabled: false,
-    matterUpgrades: [D(0), D(0), D(0)]
+    matterUpgrades: [D(0), D(0), D(0)],
+    blackHole: D(0)
   };
   
   const UPGRADE_COSTS = [
@@ -82,7 +83,7 @@
     D(1e6),
     D(1e7),
     D(1e8),
-    D(Infinity)
+    D(1e9)
   ];
   
   const CHALLENGE_GOALS = [D(1e12), D(1e20), D(1e16), D(1e18)];
@@ -195,6 +196,14 @@
   
   function getMatterUpgradeCost(x) {
     return MATTER_UPGRADE_COSTS[x].pow(game.matterUpgrades[x]).mul(1e30);
+  }
+  
+  function getBlackHoleCost(x = game.blackHole) {
+    return D.mul(400, x.add(1));
+  }
+  
+  function getBlackHoleEffect(x = game.blackHole) {
+    return x.add(10).log10();
   }
   
   // Rendering functions
@@ -349,6 +358,13 @@
     if (game.matter.gte(getMatterUpgradeCost(x))) {
       game.matter = game.matter.sub(getMatterUpgradeCost(x));
       game.matterUpgrades[x] = game.matterUpgrades[x].add(1);
+    }
+  }
+  
+  function upgradeBlackHole() {
+    if (getMatterEffect().gte(getBlackHoleCost())) {
+      game.matter = D(0);
+      game.blackHole = game.blackHole.add(1);
     }
   }
   
@@ -515,6 +531,8 @@
     getMatterGain,
     getMatterEffect,
     getMatterUpgradeCost,
+    getBlackHoleCost,
+    getBlackHoleEffect,
     format,
     formatTime,
     onOff,
@@ -528,6 +546,7 @@
     disableAutobuyers,
     enterChal,
     matterUpgrade,
+    upgradeBlackHole,
     loop,
     simulateTime,
     reset,
