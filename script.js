@@ -68,7 +68,8 @@
     matter: D(0),
     matterEnabled: false,
     matterUpgrades: [D(0), D(0), D(0)],
-    blackHole: D(0)
+    blackHole: D(0),
+    darkEnergy: D(0)
   };
   
   const UPGRADE_COSTS = [
@@ -124,11 +125,14 @@
   
   function getNumberRate(t = 1) {
     let rate = D.pow(getCompressorBase(), getTotalCompressors().add(10 * (!inChal(2) && game.upgrades.includes(9))));
-    if (!inChal(2) && game.upgrades.includes(1)) rate = rate.mul(getTotalCompressors().add(1));
-    if (game.upgrades.includes(3)) rate = rate.mul(game.exponents.add(1).sqrt());
-    if (game.upgrades.includes(6)) rate = rate.mul(game.number.add(10).log10());
-    if (game.upgrades.includes(7)) rate = rate.mul(D.pow(timePlayed() / 1000, 0.2));
-    rate = rate.mul(getMatterEffect());
+    if (!inChal(5)) {
+      if (!inChal(2) && game.upgrades.includes(1)) rate = rate.mul(getTotalCompressors().add(1));
+      if (game.upgrades.includes(3)) rate = rate.mul(game.exponents.add(1).sqrt());
+      if (game.upgrades.includes(6)) rate = rate.mul(game.number.add(10).log10());
+      if (game.upgrades.includes(7)) rate = rate.mul(D.pow(timePlayed() / 1000, 0.2));
+      rate = rate.mul(getMatterEffect());
+    }
+    rate = rate.div(D.pow10(game.darkEnergy));
     return rate.mul(t);
   }
   
@@ -186,7 +190,7 @@
   
   function getMatterGain(t = 1) {
     let rate = getNumberRate(t);
-    rate = rate.div(getMatterEffect());
+    if (!game.chalComp.includes(5)) rate = rate.div(getMatterEffect());
     rate = rate.mul(D.pow(2, game.matterUpgrades[1]));
     return rate;
   }
@@ -205,6 +209,10 @@
   
   function getBlackHoleEffect(x = game.blackHole) {
     return x.add(10).log10();
+  }
+  
+  function getDarkEnergyGain(t = 1) {
+    return game.number.root(10).div(10).mul(t);
   }
   
   // Rendering functions
@@ -301,6 +309,7 @@
       D(0),
       D(0)
     ];
+    game.darkEnergy = D(0);
   }
   
   // Functions executed manually
@@ -408,6 +417,7 @@
     game.matter = D(game.matter);
     for (i = 0; i < 3; i++) game.matterUpgrades[i] = D(game.matterUpgrades[i]);
     game.blackHole = D(game.blackHole);
+    game.darkEnergy = D(game.darkEnergy);
   }
   
   function reset(obj = newGame) {
@@ -535,6 +545,7 @@
     getMatterUpgradeCost,
     getBlackHoleCost,
     getBlackHoleEffect,
+    getDarkEnergyGain,
     format,
     formatTime,
     onOff,
