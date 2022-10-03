@@ -400,6 +400,32 @@
                   </button>
                 </td>
               </tr>
+              <tr>
+                <td>
+                  <button
+                    @click="enterChal(5)"
+                    class="exponentButton challenge"
+                    :class="game.chalComp.includes(5) ? 'bought cursorPointer' : inChal(5) ? 'running' : ''"
+                  >
+                    Challenge 5<br />
+                    ???<br />
+                    Goal: ???<br />
+                    Reward: ???
+                  </button>
+                </td>
+                <td>
+                  <button
+                    @click="enterChal(6)"
+                    class="exponentButton challenge"
+                    :class="game.chalComp.includes(6) ? 'bought cursorPointer' : inChal(6) ? 'running' : ''"
+                  >
+                    Challenge 6<br />
+                    There’s exponentially rising dark energy dividing number gain<br />
+                    Goal: ???<br />
+                    Reward: ???
+                  </button>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
