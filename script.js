@@ -407,6 +407,7 @@
     game.exponents = D(game.exponents);
     game.matter = D(game.matter);
     for (i = 0; i < 3; i++) game.matterUpgrades[i] = D(game.matterUpgrades[i]);
+    game.blackHole = D(game.blackHole);
   }
   
   function reset(obj = newGame) {
