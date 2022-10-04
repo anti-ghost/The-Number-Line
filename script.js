@@ -132,7 +132,7 @@
       if (game.upgrades.includes(7)) rate = rate.mul(D.pow(timePlayed() / 1000, 0.2));
       rate = rate.mul(getMatterEffect());
     }
-    rate = rate.div(D.pow10(game.darkEnergy));
+    rate = rate.div(game.darkEnergy.pow10());
     return rate.mul(t);
   }
   
