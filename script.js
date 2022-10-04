@@ -87,7 +87,7 @@
     D(1e9)
   ];
   
-  const CHALLENGE_GOALS = [D(1e12), D(1e20), D(1e16), D(1e18)];
+  const CHALLENGE_GOALS = [D(1e12), D(1e20), D(1e16), D(1e18), D(1e52)];
   
   const MATTER_UPGRADE_COSTS = [D(1e5), D(1e3), D(1e9)];
   
