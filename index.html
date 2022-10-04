@@ -19,6 +19,7 @@
   </head>
   <body>
     <div id="app" style="display: none;">
+      <p v-if="inChal(6)">There is {{format(game.darkEnergy.pow10())}} dark energy</p>
       <h1>Number: {{format(game.number)}}</h1>
       <p v-if="game.matterEnabled">You are gaining {{format(getMatterGain())}} matter per second</p>
       <p v-else>Your number is increasing by {{format(getNumberRate())}} per second</p>
