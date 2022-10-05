@@ -212,7 +212,7 @@
   }
   
   function getDarkEnergyGain(t = 1) {
-    return game.number.root(10).div(10).mul(t);
+    return game.number.log10().div(10).mul(t);
   }
   
   // Rendering functions
@@ -383,10 +383,10 @@
   function loop(time) {
     if (!NaNerror && checkNaNs()) NaNalert();
     if (NaNerror) return;
-    if (inChal(6)) game.darkEnergy = game.darkEnergy.add(getDarkEnergyGain(time));
     if (game.matterEnabled) game.matter = game.matter.add(getMatterGain(time));
     else game.number = game.number.add(getNumberRate(time));
     if (game.number.gt(game.highestNumber)) game.highestNumber = game.number;
+    if (inChal(6)) game.darkEnergy = game.darkEnergy.add(getDarkEnergyGain(time));
     if (game.upgrades.includes(2)) {
       for (let i = 0; i < 10; i++) {
         if (game.autobuyers[i]) buyMax(i + 1);
