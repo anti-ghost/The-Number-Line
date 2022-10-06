@@ -321,6 +321,51 @@
                   </button>
                 </td>
               </tr>
+              <tr>
+                <td>
+                  <button 
+                    @click="upgrade(13)"
+                    class="exponentButton upgradeButton"
+                    :class="inChal(2) ? 'locked' : game.upgrades.includes(13) ? 'bought' : canUpgrade(13) ? '' : 'locked'"
+                  >
+                    Compressors reduce compressor scaling<br />
+                    Currently: /{{format(getTotalCompressors().add(1).log10().add(10).log10(), 3)}}<br />
+                    Cost: 1.000e10 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(10)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(10) ? 'bought' : canUpgrade(10) ? '' : 'locked'"
+                  >
+                    Compressors boost themselves<br />
+                    Currently: x{{format(getTotalCompressors().add(1).log10().add(10).log10(), 3)}}<br />
+                    Cost: 1.000e7 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(11)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(11) ? 'bought' : canUpgrade(11) ? '' : 'locked'"
+                  >
+                    The Matter multiplier gives a boost to Compressors<br />
+                    Currently: x{{format(getMatterEffect().log10().add(1).root(10), 3)}}<br />
+                    Cost: 1.000e8 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(12)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(12) ? 'bought' : canUpgrade(12) ? '' : 'locked'"
+                  >
+                    Unlock the black hole<br /><br>
+                    Need 1.000e9 Exponents
+                  </button>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
