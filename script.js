@@ -84,7 +84,8 @@
     D(1e6),
     D(1e7),
     D(1e8),
-    D(1e9)
+    D(1e9),
+    D(1e10)
   ];
   
   const CHALLENGE_GOALS = [D(1e12), D(1e20), D(1e16), D(1e18), D(1e52)];
@@ -151,6 +152,7 @@
     if (game.chalComp.includes(1)) s = s.div(0.9);
     if (game.chalComp.includes(4)) s = s.mul(game.exponents.add(1).log10().add(10).log10());
     if (game.upgrades.includes(12)) s = s.mul(getBlackHoleEffect());
+    if (game.upgrades.includes(13)) s = s.mul(getTotalCompressors().add(1).log10().add(10).log10());
     return s;
   }
   
