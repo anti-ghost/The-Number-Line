@@ -329,7 +329,7 @@
                     :class="inChal(2) ? 'locked' : game.upgrades.includes(13) ? 'bought' : canUpgrade(13) ? '' : 'locked'"
                   >
                     Compressors reduce compressor scaling<br />
-                    Currently: /{{format(getTotalCompressors().add(1).log10().add(10).log10(), 3)}}<br />
+                    Currently: /{{format(getTotalCompressors().add(1).log10().add(1).root(10), 3)}}<br />
                     Cost: 1.000e10 Exponents
                   </button>
                 </td>
