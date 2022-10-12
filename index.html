@@ -335,13 +335,12 @@
                 </td>
                 <td>
                   <button 
-                    @click="upgrade(10)"
+                    @click="upgrade(14)"
                     class="exponentButton upgradeButton"
-                    :class="game.upgrades.includes(10) ? 'bought' : canUpgrade(10) ? '' : 'locked'"
+                    :class="game.upgrades.includes(14) ? 'bought' : canUpgrade(14) ? '' : 'locked'"
                   >
-                    Compressors boost themselves<br />
-                    Currently: x{{format(getTotalCompressors().add(1).log10().add(10).log10(), 3)}}<br />
-                    Cost: 1.000e7 Exponents
+                    The Number multiplier from Compressors is raised to the 1.05<br /><br />
+                    Cost: 1.000e12 Exponents
                   </button>
                 </td>
                 <td>
