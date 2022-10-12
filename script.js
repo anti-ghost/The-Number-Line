@@ -207,6 +207,7 @@
   }
   
   function getBlackHoleCost(x = game.blackHole) {
+    if (x.gte(10)) return x.add(1).div(10).pow10().mul(400);
     return D.mul(400, x.add(1));
   }
   
