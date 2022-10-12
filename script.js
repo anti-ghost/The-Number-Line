@@ -125,7 +125,7 @@
   }
   
   function getNumberRate(t = 1) {
-    let rate = D.pow(getCompressorBase(), getTotalCompressors().add(10 * (!inChal(2) && game.upgrades.includes(9))));
+    let rate = D.pow(getCompressorBase(), getTotalCompressors().add(10 * (!inChal(2) && game.upgrades.includes(9)))).pow(game.upgrades.includes(14) ? 1.05 : 1);
     if (!inChal(5)) {
       if (!inChal(2) && game.upgrades.includes(1)) rate = rate.mul(getTotalCompressors().add(1));
       if (game.upgrades.includes(3)) rate = rate.mul(game.exponents.add(1).sqrt());
