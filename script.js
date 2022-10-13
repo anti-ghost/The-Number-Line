@@ -408,10 +408,9 @@
     game.lastTick = Date.now();
     if (DEBUG) ms *= dev.speed;
     for (let i = 0; i < 10; i++) {
-      if (NaNerror) return Date.now() - game.lastTick;
+      if (NaNerror) return;
       loop(ms / 10000);
     }
-    return Date.now() - game.lastTick;
   }
   
   // Save-load functions
