@@ -408,8 +408,8 @@
     game.lastTick = Date.now();
     if (DEBUG) ms *= dev.speed;
     for (let i = 0; i < 10; i++) {
-      if (NaNerror) return;
       loop(ms / 10000);
+      if (NaNerror) return;
     }
   }
   
