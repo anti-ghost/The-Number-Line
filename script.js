@@ -289,7 +289,7 @@
       ),
         n = D.sumGeometricSeries(
           c,
-          D.pow10D.div(x, getCompressorScaling())).div(game.chalComp.includes(3) ? game.matter.root(5) : 1),
+          D.pow10(D.div(x, getCompressorScaling())).div(game.chalComp.includes(3) ? game.matter.root(5) : 1),
           D.pow10(D.div(x, getCompressorScaling())),
           game.compressors[x - 1]
         );
