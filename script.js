@@ -385,8 +385,11 @@
   // Game loop functions
   
   function loop(time) {
-    if (!NaNerror && checkNaNs()) NaNalert();
     if (NaNerror) return;
+    if (checkNaNs()) {
+      NaNalert();
+      return;
+    }
     if (game.matterEnabled) game.matter = game.matter.add(getMatterGain(time));
     else game.number = game.number.add(getNumberRate(time));
     if (game.number.gt(game.highestNumber)) game.highestNumber = game.number;
@@ -405,6 +408,7 @@
     game.lastTick = Date.now();
     if (DEBUG) ms *= dev.speed;
     for (let i = 0; i < 10; i++) {
+      if (NaNerror) return Date.now() - game.lastTick;
       loop(ms / 10000);
     }
     return Date.now() - game.lastTick;
