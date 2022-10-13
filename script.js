@@ -282,14 +282,14 @@
     if (!inChal(1) && !inChal(3) && game.number.lte(D.pow(1e12, getCompressorScaling()))) {
       const c = D.affordGeometricSeries(
         game.number,
-        D.pow10(getCompressorScaling().mul(x)).div(game.chalComp.includes(3) ? game.matter.root(5) : 1),
-        D.pow10(getCompressorScaling().mul(x)),
+        D.pow10(D.div(x, getCompressorScaling())).div(game.chalComp.includes(3) ? game.matter.root(5) : 1),
+        D.pow10(D.div(x, getCompressorScaling())),
         game.compressors[x - 1]
       ),
         n = D.sumGeometricSeries(
           c,
-          D.pow10(getCompressorScaling().mul(x)).div(game.chalComp.includes(3) ? game.matter.root(5) : 1),
-          D.pow10(getCompressorScaling().mul(x)),
+          D.pow10D.div(x, getCompressorScaling())).div(game.chalComp.includes(3) ? game.matter.root(5) : 1),
+          D.pow10(D.div(x, getCompressorScaling())),
           game.compressors[x - 1]
         );
       game.compressors[x - 1] = game.compressors[x - 1].add(c);
