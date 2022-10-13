@@ -145,6 +145,7 @@
     if (!inChal(2) && game.upgrades.includes(5)) b = b.mul(1.1);
     if (game.upgrades.includes(10)) b = b.mul(getTotalCompressors().add(1).log10().add(10).log10());
     if (game.upgrades.includes(11)) b = b.mul(getMatterEffect().log10().add(1).root(10));
+    if (game.chalComp.includes(6)) b = b.mul(game.number.add(1e10).log10().log10());
     return b;
   }
   
