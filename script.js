@@ -100,6 +100,8 @@
   
   let NaNerror = false;
   
+  let looping = false;
+  
   // NaN-checking functions
   
   function NaNalert() {
@@ -405,6 +407,8 @@
   
   function simulateTime(ms) {
     if (NaNerror) return;
+    if (looping) return;
+    looping = true;
     game.debug = DEBUG;
     game.version = VERSION;
     game.lastTick = Date.now();
@@ -413,6 +417,7 @@
       loop(ms / 10000);
       if (NaNerror) return;
     }
+    looping = false;
   }
   
   // Save-load functions
@@ -537,6 +542,7 @@
     MATTER_UPGRADE_COSTS,
     tabs,
     NaNerror,
+    looping,
     NaNalert,
     checkNaNs,
     timePlayed,
