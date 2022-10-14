@@ -103,6 +103,7 @@
   // NaN-checking functions
   
   function NaNalert() {
+    if (NaNerror) return;
     NaNerror = true;
     copyStringToClipboard(btoa(JSON.stringify(game)));
     alert(
