@@ -283,7 +283,7 @@
   // Buy-max functions
   
   function buyMax(x) {
-    if (!inChal(1) && !inChal(3) && game.number.lte(D.pow(1e12, getCompressorScaling()))) {
+    /* if (!inChal(1) && !inChal(3) && game.number.lte(D.pow(1e12, getCompressorScaling()))) {
       const c = D.affordGeometricSeries(
         game.number,
         D.pow10(D.div(x, getCompressorScaling())).div(game.chalComp.includes(3) ? game.matter.add(1).root(5) : 1),
@@ -298,7 +298,7 @@
         );
       game.compressors[x - 1] = game.compressors[x - 1].add(c);
       game.number = game.number.sub(n);
-    } else while (canCompress(x)) compress(x);
+    } else */ while (canCompress(x)) compress(x);
   }
   
   // Soft reset functions
