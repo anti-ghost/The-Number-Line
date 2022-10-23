@@ -86,7 +86,9 @@
     D(1e8),
     D(1e9),
     D(1e10),
-    D(1e12)
+    D(1e12),
+    D(1e20),
+    D(Infinity)
   ];
   
   const CHALLENGE_GOALS = [D(1e12), D(1e20), D(1e16), D(1e18), D(1e52), D(1e100)];
