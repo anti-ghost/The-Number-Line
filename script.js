@@ -211,8 +211,9 @@
   }
   
   function getBlackHoleCost(x = game.blackHole) {
-    if (x.gte(10)) return D.pow(2, x.sub(9)).mul(4000);
-    return D.mul(400, x.add(1));
+    let cost = x.gte(10) ? D.pow(2, x.sub(9)).mul(4000) : D.mul(400, x.add(1));
+    if (game.upgrades.includes(15)) cost = cost.div(10);
+    return cost;
   }
   
   function getBlackHoleEffect(x = game.blackHole) {
