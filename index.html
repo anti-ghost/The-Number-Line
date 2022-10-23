@@ -346,23 +346,22 @@
                 </td>
                 <td>
                   <button 
-                    @click="upgrade(11)"
+                    @click="upgrade(15)"
                     class="exponentButton upgradeButton"
-                    :class="game.upgrades.includes(11) ? 'bought' : canUpgrade(11) ? '' : 'locked'"
+                    :class="game.upgrades.includes(15) ? 'bought' : canUpgrade(15) ? '' : 'locked'"
                   >
-                    The Matter multiplier gives a boost to Compressors<br />
-                    Currently: x{{format(getMatterEffect().log10().add(1).root(10), 3)}}<br />
-                    Cost: 1.000e8 Exponents
+                    Black Holes are 10x cheaper<br / ><br />
+                    Cost: 1.000e20 Exponents
                   </button>
                 </td>
                 <td>
                   <button 
-                    @click="upgrade(12)"
+                    @click="upgrade(16)"
                     class="exponentButton upgradeButton"
-                    :class="game.upgrades.includes(12) ? 'bought' : canUpgrade(12) ? '' : 'locked'"
+                    :class="game.upgrades.includes(16) ? 'bought' : canUpgrade(16) ? '' : 'locked'"
                   >
-                    Unlock the black hole<br /><br>
-                    Need 1.000e9 Exponents
+                    ???<br /><br>
+                    ???
                   </button>
                 </td>
               </tr>
