@@ -214,7 +214,7 @@
   
   function getBlackHoleCost(x = game.blackHole) {
     let cost = x.gte(10) ? D.pow(2, x.sub(9)).mul(4000) : D.mul(400, x.add(1));
-    if (game.upgrades.includes(15)) cost = cost.div(1000);
+    if (game.upgrades.includes(15)) cost = cost.div(4000);
     return cost;
   }
   
