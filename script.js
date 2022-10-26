@@ -218,7 +218,7 @@
   }
   
   function getBlackHoleEffect(x = game.blackHole) {
-    return x.add(10).log10().mul(game.upgrades.includes(15) ? 1.3 : 1);
+    return x.add(10).log10().mul(game.upgrades.includes(15) ? 1.28 : 1);
   }
   
   function getDarkEnergyGain(t = 1) {
