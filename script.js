@@ -214,12 +214,11 @@
   
   function getBlackHoleCost(x = game.blackHole) {
     let cost = x.gte(10) ? D.pow(2, x.sub(9)).mul(4000) : D.mul(400, x.add(1));
-    if (game.upgrades.includes(15)) cost = cost.div(4000);
     return cost;
   }
   
   function getBlackHoleEffect(x = game.blackHole) {
-    return x.add(10).log10();
+    return x.add(10).log10().mul(game.upgrades.includes(15) ? 1.25 : 1);
   }
   
   function getDarkEnergyGain(t = 1) {
