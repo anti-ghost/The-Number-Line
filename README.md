@@ -31,9 +31,6 @@ Matter can be spent on Matter Upgrades which boost matter-related effects.
 ### Black Hole
 When you reach a 400x matter multiplier, you can reset your matter to upgrade your black hole level.
 Your black hole reduces compressor scaling based on its level. The black hole effect is log<sub>10</sub>(level+10).
-Keep pushing Exponents, Matter, and Black Holes until you can complete Challenge 6.
-In Challenge 6, there is exponentially rising dark energy dividing your Number gain.
-Completing this challenge will multiply the base of the compressor multiplier formula by (log<sub>10</sub>(log<sub>10</sub>(number+1e10)))<sup>1/3</sup>.
 # Changelog
 This is a list of changes for The Number Line.
 ## v0.0.0 – Initial Development
