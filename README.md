@@ -53,3 +53,8 @@ This is a list of changes for The Number Line.
 ### v1.2.0 – The Matter Update (September 30, 2022)
 * Added Matter
 * Added 2 more challenges
+### v1.3.0 – The Black Hole Update (October 27, 2022)
+* Added the Black Hole
+* Added 2 more challenges
+* Finished the upgrade table
+* Multiple bug fixes
