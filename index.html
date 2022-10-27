@@ -6,11 +6,11 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" href="https://anti-ghost.github.io/images/ghost.jpg" />
     <script 
-      src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.prod.js"
+      src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.js"
       defer
     ></script>
     <script
-      src="https://code.jquery.com/jquery-3.6.1.min.js"
+      src="https://code.jquery.com/jquery-3.6.1.js"
       defer
     ></script>
     <script src="notify.js" defer></script>
@@ -19,6 +19,7 @@
   </head>
   <body>
     <div id="app" style="display: none;">
+      <p v-if="inChal(6)">There is {{format(game.darkEnergy.pow10())}} dark energy</p>
       <h1>Number: {{format(game.number)}}</h1>
       <p v-if="game.matterEnabled">You are gaining {{format(getMatterGain())}} matter per second</p>
       <p v-else>Your number is increasing by {{format(getNumberRate())}} per second</p>
@@ -146,8 +147,8 @@
         <p>
           <small>
             <i>
-              Current version: 1.2.0<br />
-              Last updated: September 30, 2022<br />
+              Current version: 1.3.0<br />
+              Last updated: October 27, 2022<br />
               © 2022 <a href="https://github.com/anti-ghost">resu deteleD</a><br />
               This work is licensed under the <a href="https://opensource.org/licenses/MIT">MIT License</a>
             </i>
@@ -169,7 +170,8 @@
             {{
               game.challenge > 0 ? game.number.gte(CHALLENGE_GOALS[game.challenge - 1]) ? "Complete the challenge!" :
               "Reach " + format(CHALLENGE_GOALS[game.challenge - 1]) + " to complete the challenge. Click here to exit your challenge." :
-              game.number.gte(1e12) ? "Exponentiate for " + format(getExponentGain()) + " exponents (Next at " + format(getNextExponent()) + ")" :
+              game.number.gte(1e12) ? "Exponentiate for " + format(getExponentGain()) + " exponents" + 
+              (game.number.lt(1e50) ? " (Next at " + format(getNextExponent()) + ")" : "") :
               "Reach 1.000e12 to Exponentiate"
             }}
           </button>
@@ -315,6 +317,49 @@
                     class="exponentButton upgradeButton"
                     :class="game.upgrades.includes(12) ? 'bought' : canUpgrade(12) ? '' : 'locked'"
                   >
+                    Unlock the black hole<br /><br>
+                    Need 1.000e9 Exponents
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <button 
+                    @click="upgrade(13)"
+                    class="exponentButton upgradeButton"
+                    :class="inChal(2) ? 'locked' : game.upgrades.includes(13) ? 'bought' : canUpgrade(13) ? '' : 'locked'"
+                  >
+                    Compressors reduce compressor scaling<br />
+                    Currently: /{{format(getTotalCompressors().add(1).log10().add(1).root(10), 3)}}<br />
+                    Cost: 1.000e10 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(14)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(14) ? 'bought' : canUpgrade(14) ? '' : 'locked'"
+                  >
+                    The Number multiplier from Compressors is raised to the 1.05<br />
+                    Cost: 1.000e12 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(15)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(15) ? 'bought' : canUpgrade(15) ? '' : 'locked'"
+                  >
+                    Black Holes are 30% more effective<br / ><br />
+                    Cost: 1.000e20 Exponents
+                  </button>
+                </td>
+                <td>
+                  <button 
+                    @click="upgrade(16)"
+                    class="exponentButton upgradeButton"
+                    :class="game.upgrades.includes(16) ? 'bought' : canUpgrade(16) ? '' : 'locked'"
+                  >
                     ???<br /><br>
                     ???
                   </button>
@@ -384,7 +429,7 @@
                     Challenge 3<br />
                     Each Compressor you buy increases the costs of the others.<br />
                     Goal: 1.000e16<br />
-                    Reward: Matter divides compressor costs (Currently: /{{format(game.matter.root(5))}})
+                    Reward: Matter divides compressor costs (Currently: /{{format(game.matter.add(1).root(5))}})
                   </button>
                 </td>
                 <td>
@@ -397,6 +442,32 @@
                     Base Compressor multiplier is x1.<br />
                     Goal: 1.000e18<br />
                     Reward: Exponents reduce compressor scaling (Currently: /{{format(game.exponents.add(1).log10().add(10).log10(), 3)}})
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <button
+                    @click="enterChal(5)"
+                    class="exponentButton challenge"
+                    :class="game.chalComp.includes(5) ? 'bought cursorPointer' : inChal(5) ? 'running' : ''"
+                  >
+                    Challenge 5<br />
+                    Compressors are the only things that boost Number generation.<br />
+                    Goal: 1.000e52<br />
+                    Reward: The Matter multiplier multiplies matter gain
+                  </button>
+                </td>
+                <td>
+                  <button
+                    @click="enterChal(6)"
+                    class="exponentButton challenge"
+                    :class="game.chalComp.includes(6) ? 'bought cursorPointer' : inChal(6) ? 'running' : ''"
+                  >
+                    Challenge 6<br />
+                    There’s exponentially rising dark energy dividing number gain.<br />
+                    Goal: 1.000e100<br />
+                    Reward: The Compressor multiplier is boosted by your number (Currently: x{{format(game.number.add(1e10).log10().log10().root(3), 3)}})
                   </button>
                 </td>
               </tr>
@@ -456,6 +527,17 @@
               </tr>
             </tbody>
           </table>
+          <div v-if="game.upgrades.includes(12)">
+            <p>
+              Your black hole level is {{format(game.blackHole)}}, reducing compressor scaling by {{format(getBlackHoleEffect(), 3)}}.
+            </p>
+            <p>
+              <button @click="upgradeBlackHole()" class="exponentButton upgradeButton" :class="getMatterEffect().gte(getBlackHoleCost()) ? '' : 'locked'">
+                Reset matter for a black hole level<br />
+                Need: {{format(getBlackHoleCost())}}x matter multiplier
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     </div>

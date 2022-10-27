@@ -27,7 +27,10 @@ You can exit a challenge if you don’t think you are able to complete the chall
 ### Matter
 When you enable Matter production, your number does not increase, but you gain matter based on your number rate.
 Matter gives a boost to Number gain based on its amount. The boost is log<sub>10</sub>(matter+10).
-Matter can be spent on Matter Upgrades which give matter-related effects.
+Matter can be spent on Matter Upgrades which boost matter-related effects.
+### Black Hole
+When you reach a 400x matter multiplier, you can reset your matter to upgrade your black hole level.
+Your black hole reduces compressor scaling based on its level. The black hole effect is log<sub>10</sub>(level+10).
 # Changelog
 This is a list of changes for The Number Line.
 ## v0.0.0 – Initial Development
@@ -50,3 +53,8 @@ This is a list of changes for The Number Line.
 ### v1.2.0 – The Matter Update (September 30, 2022)
 * Added Matter
 * Added 2 more challenges
+### v1.3.0 – The Black Hole Update (October 27, 2022)
+* Added the Black Hole
+* Added 2 more challenges
+* Finished the upgrade table
+* Multiple bug fixes
