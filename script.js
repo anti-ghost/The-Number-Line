@@ -15,7 +15,7 @@
   // Change this to false when deploying for production
   const DEBUG = true;
   
-  const VERSION = "2.0.0";
+  const VERSION = "1.3.0";
   
   // Import global variables into function scope
   const Vue = global.Vue,
@@ -69,11 +69,7 @@
     matterEnabled: false,
     matterUpgrades: [D(0), D(0), D(0)],
     blackHole: D(0),
-    darkEnergy: D(0),
-    infUnlocked: false,
-    infConf: true,
-    ip: D(0),
-    infComp: D(0)
+    darkEnergy: D(0)
   };
   
   const UPGRADE_COSTS = [
@@ -92,7 +88,7 @@
     D(1e10),
     D(1e12),
     D(1e20),
-    D(1e31)
+    D(Infinity)
   ];
   
   const CHALLENGE_GOALS = [D(1e12), D(1e20), D(1e16), D(1e18), D(1e52), D(1e100)];
@@ -135,13 +131,7 @@
   }
   
   function getNumberRate(t = 1) {
-    let rate = D.pow(
-      getCompressorBase(),
-      getTotalCompressors()
-        .add(10 * (!inChal(2) && game.upgrades.includes(9)))
-        .add(game.infComp.mul(10))
-    )
-    .pow(game.upgrades.includes(14) ? 1.05 : 1);
+    let rate = D.pow(getCompressorBase(), getTotalCompressors().add(10 * (!inChal(2) && game.upgrades.includes(9)))).pow(game.upgrades.includes(14) ? 1.05 : 1);
     if (!inChal(5)) {
       if (!inChal(2) && game.upgrades.includes(1)) rate = rate.mul(getTotalCompressors().add(1));
       if (game.upgrades.includes(3)) rate = rate.mul(game.exponents.add(1).sqrt());
@@ -208,7 +198,7 @@
   }
   
   function getMatterGain(t = 1) {
-    let rate = getNumberRate(t).min(getNumberRate(t).mul(D.pow(2, 1024)).sqrt());
+    let rate = getNumberRate(t);
     if (!game.chalComp.includes(5)) rate = rate.div(getMatterEffect());
     rate = rate.mul(D.pow(2, game.matterUpgrades[1]));
     return rate;
@@ -233,10 +223,6 @@
   
   function getDarkEnergyGain(t = 1) {
     return game.number.log10().div(10).mul(t);
-  }
-  
-  function getIPGain(x = game.matter) {
-    return x.div(D.pow(2, 1024)).root(1024 * Math.log10(2));
   }
   
   // Rendering functions
@@ -336,16 +322,6 @@
     game.darkEnergy = D(0);
   }
   
-  function resetExponents() {
-    resetCompressors();
-    game.exponents = D(0);
-    game.upgrades = game.upgrades.filter(x => x % 4 == 0);
-    game.chalComp = [];
-    game.matter = D(0);
-    game.matterUpgrades = [];
-    game.blackHole = D(0);
-  }
-  
   // Functions executed manually
   
   function compress(x) {
@@ -412,27 +388,6 @@
     }
   }
   
-  function infinity() {
-    if (game.matter.gt(D.dNumberMax)) {
-      if (game.infConf && 
-        !confirm(
-          "Infinity will reset everything Exponentiate resets, as well as your exponents, upgrades, challenges, matter, matter upgrades, and black hole." +
-          "You will gain Infinity Points and unlock access to various upgrades."
-        )
-      ) return;
-      game.infUnlocked = true;
-      game.ip = game.ip.add(getIPGain());
-      resetExponents();
-    }
-  }
-  
-  function infCompress() {
-    if (game.ip.gte(game.infComp.pow10())) {
-      game.ip = game.ip.sub(game.infComp.pow10());
-      game.infComp = game.infComp.add(1);
-    }
-  }
-  
   // Game loop functions
   
   function loop(time) {
@@ -480,8 +435,6 @@
     for (i = 0; i < 3; i++) game.matterUpgrades[i] = D(game.matterUpgrades[i]);
     game.blackHole = D(game.blackHole);
     game.darkEnergy = D(game.darkEnergy);
-    game.ip = D(game.ip);
-    game.infCompressors = D(game.infCompressors);
   }
   
   function reset(obj = newGame) {
@@ -611,14 +564,12 @@
     getBlackHoleCost,
     getBlackHoleEffect,
     getDarkEnergyGain,
-    getIPGain,
     format,
     formatTime,
     onOff,
     enableDisable,
     buyMax,
     resetCompressors,
-    resetExponents,
     compress,
     exponentiate,
     upgrade,
@@ -627,8 +578,6 @@
     enterChal,
     matterUpgrade,
     upgradeBlackHole,
-    infinity,
-    infCompress,
     loop,
     simulateTime,
     reset,
